@@ -1,8 +1,10 @@
 "use client";
+
+// блок навігації для гедера
+
 import Link from "next/link";
 import css from "./AuthNavigation.module.css";
 import { useAuthStore } from "@/lib/store/authStore";
-import { logout } from "@/lib/api/clientApi";
 import { useRouter } from "next/navigation";
 
 export default function AuthNavigation() {
@@ -13,7 +15,7 @@ export default function AuthNavigation() {
   );
 
   const handleLogout = async () => {
-    await logout();
+    // await logout();
     clearIsAuthenticated();
     router.replace("/sign-in");
   };
