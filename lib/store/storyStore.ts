@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { NewNote } from "@/types/story";
+import type { NewStory } from "@/types/story";
 
 type StoryDraftStore = {
-  draft: NewNote;
-  setDraft: (note: NewNote) => void;
+  draft: NewStory;
+  setDraft: (note: NewStory) => void;
   clearDraft: () => void;
 };
 
-const initialDraft: NewNote = {
+const initialDraft: NewStory = {
   title: "",
   content: "",
   tag: "Todo",
