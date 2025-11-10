@@ -1,16 +1,16 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
-import { NextResponse } from "next/server";
-import { api } from "../api";
-import { cookies } from "next/headers";
-import { logErrorResponse } from "../_utils/utils";
-import { isAxiosError } from "axios";
+import { NextResponse } from 'next/server';
+import { api } from '../api';
+import { cookies } from 'next/headers';
+import { logErrorResponse } from '../_utils/utils';
+import { isAxiosError } from 'axios';
 
 export async function GET() {
   try {
     const cookieStore = await cookies();
 
-    const res = await api.get("/users", {
+    const res = await api.get('/users', {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -26,7 +26,7 @@ export async function GET() {
     }
     logErrorResponse({ message: (error as Error).message });
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: 'Internal Server Error' },
       { status: 500 }
     );
   }

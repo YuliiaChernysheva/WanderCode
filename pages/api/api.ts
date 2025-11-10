@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: "",
+  baseURL: '',
   //посилання на бек
   withCredentials: true,
 });

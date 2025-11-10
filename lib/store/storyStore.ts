@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { NewStory } from "@/types/story";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { NewStory } from '@/types/story';
 
 type StoryDraftStore = {
   draft: NewStory;
@@ -9,9 +9,9 @@ type StoryDraftStore = {
 };
 
 const initialDraft: NewStory = {
-  title: "",
-  content: "",
-  tag: "Todo",
+  title: '',
+  content: '',
+  tag: 'Todo',
   // поля для історії перевизначити
 };
 
@@ -23,7 +23,7 @@ export const useStoryDraftStore = create<StoryDraftStore>()(
       clearDraft: () => set({ draft: initialDraft }),
     }),
     {
-      name: "story-draft",
+      name: 'story-draft',
     }
   )
 );

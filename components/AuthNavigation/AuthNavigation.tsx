@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 // блок навігації для гедера
 
-import Link from "next/link";
-import css from "./AuthNavigation.module.css";
-import { useAuthStore } from "@/lib/store/authStore";
-import { useRouter } from "next/navigation";
+import Link from 'next/link';
+import css from './AuthNavigation.module.css';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useRouter } from 'next/navigation';
 
 export default function AuthNavigation() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function AuthNavigation() {
   const handleLogout = async () => {
     // await logout();
     clearIsAuthenticated();
-    router.replace("/sign-in");
+    router.replace('/sign-in');
   };
   return isAuthenticated ? (
     <>

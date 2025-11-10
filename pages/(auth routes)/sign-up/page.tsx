@@ -1,34 +1,34 @@
-"use client";
-import css from "./SignUpPage.module.css";
-import { RegisterRequest, registerUser } from "@/lib/api/clientApi";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ApiError } from "next/dist/server/api-utils";
-import { useAuthStore } from "@/lib/store/authStore";
+'use client';
+import css from './SignUpPage.module.css';
+import { RegisterRequest, registerUser } from '@/lib/api/clientApi';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { ApiError } from 'next/dist/server/api-utils';
+import { useAuthStore } from '@/lib/store/authStore';
 
 export default function SingUp() {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const setUser = useAuthStore((state) => state.setUser);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const formValues: RegisterRequest = {
-      email: String(formData.get("email")),
-      password: String(formData.get("password")),
+      email: String(formData.get('email')),
+      password: String(formData.get('password')),
     };
     try {
       const res = await registerUser(formValues);
 
       if (res) {
         setUser(res);
-        router.push("/profile");
+        router.push('/profile');
       } else {
-        setError("Invalid email or password");
+        setError('Invalid email or password');
       }
     } catch (error) {
-      setError((error as ApiError).message ?? "Oops... some error");
+      setError((error as ApiError).message ?? 'Oops... some error');
     }
   };
 
@@ -37,7 +37,7 @@ export default function SingUp() {
     document
       .querySelector('meta[name="description"]')
       ?.setAttribute(
-        "content",
+        'content',
         `Create a new account on NoteHub. Sign up with your email and password to get started.`
       );
   });
