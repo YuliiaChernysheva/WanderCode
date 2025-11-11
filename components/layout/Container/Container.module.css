@@ -1,0 +1,63 @@
+/* components/layout/Container/Container.module.css */
+
+/*
+  Mobile First (from 320px up to 374px)
+  The layout is "fluid" (stretches)
+  Base padding for all mobile devices.
+*/
+.container {
+    /* Center the container horizontally */
+    margin-left: auto;
+    margin-right: auto;
+
+    /* Ensure 100% width for fluid layout */
+    width: 100%;
+
+    /* Mobile padding: 20px on sides */
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/*
+  Mobile Breakpoint: min-width: 375px
+  The layout becomes "adaptive" (fixed width)
+*/
+@media (min-width: 375px) {
+    .container {
+        /*
+      Limit max-width to the mobile design width (375px)
+      to prevent further stretching, as per requirements.
+    */
+        max-width: 375px;
+
+        /* Padding remains 20px */
+    }
+}
+
+/*
+  Tablet Breakpoint: min-width: 768px
+*/
+@media (min-width: 768px) {
+    .container {
+        /* Tablet container max-width */
+        max-width: 736px;
+
+        /* Adaptive padding for Tablet: 32px */
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+}
+
+/*
+  Desktop Breakpoint: min-width: 1440px
+*/
+@media (min-width: 1440px) {
+    .container {
+        /* Desktop container max-width */
+        max-width: 1280px;
+
+        /* Adaptive padding for Desktop: 64px */
+        padding-left: 64px;
+        padding-right: 64px;
+    }
+}
