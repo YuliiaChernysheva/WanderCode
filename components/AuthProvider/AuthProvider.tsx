@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { checkSession } from "@/lib/api/clientApi";
-import { getMe } from "../../lib/api/clientApi";
-import { useAuthStore } from "../../lib/store/authStore";
-import { useEffect } from "react";
+import { checkSession } from '@/lib/api/clientApi';
+import { getMe } from '../../lib/api/clientApi';
+import { useAuthStore } from '../../lib/store/authStore';
+import { useEffect } from 'react';
 
 type Props = {
   children: React.ReactNode;

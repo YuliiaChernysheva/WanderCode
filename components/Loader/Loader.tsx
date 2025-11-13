@@ -1,5 +1,6 @@
-import { DotLoader } from "react-spinners";
-import css from "../Loader/Loader.module.css";
+// components/Loader/Loader.tsx
+import { DotLoader } from 'react-spinners';
+import css from '../Loader/Loader.module.css';
 
 export default function Loader() {
   return (

@@ -1,0 +1,15 @@
+# Ігнорування збірок, бібліотек і вихідних файлів
+node_modules
+.next
+out
+build
+dist
+
+# Системні файли
+.DS_Store
+
+# Зображення та статичні файли
+public/*.png
+public/*.jpg
+public/*.ico
+public/*.svg
