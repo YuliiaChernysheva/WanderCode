@@ -1,15 +1,30 @@
 export interface Story {
-  id: string;
+  _id: string;
+  img: string;
   title: string;
-  content: string;
-  tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
-  createdAt: string;
-  updatedAt: string;
+  article: string;
+  category: string;
+  ownerId: string;
+  date: string;
+  favoriteCount: number;
+}
+
+export interface StoriesResponse {
+  data: {
+    data: Story[];
+    hasNextPage: boolean;
+    page: number;
+    perPage: number;
+    totalItems: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+  };
 }
 
 export interface NewStory {
+  img: string;
   title: string;
-  content: string;
-  tag: string;
+  article: string;
+  category: string;
+  date?: string;
 }
-// переписати для типу сторі те що є це тільки для прикладу
