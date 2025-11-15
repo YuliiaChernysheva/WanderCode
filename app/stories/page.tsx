@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
-import TravellersStories from "@/components/TravellersStories/TravellersStories";
-import styles from "./StoriesPage.module.css";
-import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
+// app/stories/page.tsx
+import type { Metadata } from 'next';
+import TravellersStories from '@/components/TravellersStories/TravellersStories';
+import styles from './StoriesPage.module.css';
+import TanStackProvider from '@/components/TanStackProvider/TanStackProvider';
 
 export const metadata: Metadata = {
-  title: "Історії Мандрівників | Подорожники",
+  title: 'Історії Мандрівників | Подорожники',
   description:
-    "Надихаючі історії мандрівників з усього світу: Європа, Азія, гори, пустелі та океани. Читайте досвід інших та плануйте власні пригоди.",
+    'Надихаючі історії мандрівників з усього світу: Європа, Азія, гори, пустелі та океани. Читайте досвід інших та плануйте власні пригоди.',
 };
 
 const StoriesPage = () => {
@@ -15,7 +16,7 @@ const StoriesPage = () => {
       <section className={styles.section}>
         <div className={styles.container}>
           <header className={styles.header}>
-            <h1 className={styles.heading}>Історії  Мандрівників</h1>
+            <h1 className={styles.heading}>Історії Мандрівників</h1>
 
             {/* Ряд табів (desktop/tablet) */}
             <div className={styles.filtersRow}>
