@@ -21,6 +21,8 @@ export default function SignIn() {
     };
     try {
       const res = await loginUser(formValues);
+      console.log('sing-inasdfvdz c', res);
+
       if (res) {
         setUser(res);
       } else {
