@@ -1,46 +1,71 @@
 'use client';
-import { nextServer } from '@/lib/api/api';
+import { User } from '@/types/user';
+import { nextServer } from './api';
 import { StoriesResponse } from '@/types/story';
 
-export async function checkSession(): Promise<boolean> {
-  try {
-    const response = await fetch('/api/auth/session', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+export type RegisterRequest = {
+  name: string;
+  email: string;
+  password: string;
+};
 
-    if (response.ok) {
-      return true;
-    }
-
-    return false;
-  } catch (error) {
-    console.error('Error during session check:', error);
-    return false;
-  }
-}
+export type AuthorizationRequest = {
+  email: string;
+  password: string;
+};
 
 export async function fetchAllStoriesClient({
   page,
   perPage,
   filter,
-  sort,
+  sortField,
+  sortOrder,
 }: {
   page?: number;
-  perPage?: string;
+  perPage?: number;
   filter?: string;
-  sort?: string;
+  sortField?: string;
+  sortOrder?: string;
 }): Promise<StoriesResponse> {
   const response = await nextServer.get<StoriesResponse>('/stories', {
     params: {
       page,
       perPage,
       filter,
-      sort,
+      sortField,
+      sortOrder,
     },
   });
 
   return response.data;
 }
+
+export async function registerUser(data: RegisterRequest): Promise<User> {
+  const response = await nextServer.post(`/auth/register`, data);
+  return {
+    ...response.data,
+  };
+}
+
+export async function loginUser(data: AuthorizationRequest): Promise<User> {
+  const response = await nextServer.post(`/auth/login`, data);
+  return {
+    ...response.data,
+  };
+}
+export const getMe = async () => {
+  const { data } = await nextServer.get<User>('/users/current');
+  return data;
+};
+export const checkSession = async (): Promise<boolean> => {
+  try {
+    const res = await nextServer.post('/auth/refresh');
+    return res.status === 200;
+  } catch {
+    return false;
+  }
+};
+
+export const logout = async (): Promise<void> => {
+  await nextServer.post('/auth/logout');
+};

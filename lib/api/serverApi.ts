@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { nextServer } from './api';
 import { StoriesResponse } from '@/types/story';
 import { AxiosResponse } from 'axios';
+import { User } from '@/types/user';
 
 async function getServerCookies(): Promise<string> {
   const cookieStore = await cookies();
@@ -13,7 +14,7 @@ async function getServerCookies(): Promise<string> {
 }
 
 export const checkServerSession = async (): Promise<AxiosResponse> => {
-  const res = await nextServer.get('/auth/session', {
+  const res = await nextServer.get('/auth/refresh', {
     headers: {
       Cookie: await getServerCookies(),
     },
@@ -26,26 +27,43 @@ export async function fetchAllStoriesServer({
   page,
   perPage,
   filter,
-  sort,
+  sortField,
+  sortOrder,
 }: {
   page?: number;
-  perPage?: string;
+  perPage?: number;
   filter?: string;
-  sort?: string;
+  sortField?: string;
+  sortOrder?: string;
 }): Promise<StoriesResponse> {
   const response = await nextServer.get<StoriesResponse>(`/stories`, {
     params: {
-      perPage,
       page,
+      perPage,
       filter,
-      sort,
+      sortField,
+      sortOrder,
     },
-    // headers: {
-    //   Cookie: await getServerCookies(),
-    // },
+    headers: {
+      Cookie: await getServerCookies(),
+    },
   });
 
   return {
     ...response.data,
   };
 }
+
+export const getMeServer = async (): Promise<User | null> => {
+  try {
+    const res = await nextServer.get<User>('/users/current', {
+      headers: {
+        Cookie: await getServerCookies(),
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error('Failed to fetch user on server:', error);
+    return null;
+  }
+};

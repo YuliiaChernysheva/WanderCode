@@ -8,14 +8,22 @@ import { StoriesResponse } from '@/types/story';
 
 type PopularClientProps = {
   initialData: StoriesResponse;
+  perPage: number;
+  sortField: string;
+  sortOrder: string;
 };
 
 export default function PopularSectionClient({
   initialData,
+  perPage,
+  sortField,
+  sortOrder,
 }: PopularClientProps) {
-  const [stories, setStories] = useState(initialData.data.data);
+  const [stories, setStories] = useState(initialData.data.data ?? []);
   const [page, setPage] = useState(1);
-  const [hasNextPage, setHasNextPage] = useState(initialData.data.hasNextPage);
+  const [hasNextPage, setHasNextPage] = useState(
+    initialData.data.hasNextPage ?? false
+  );
   const [loading, setLoading] = useState(false);
 
   const loadMore = async () => {
@@ -24,7 +32,12 @@ export default function PopularSectionClient({
     setLoading(true);
 
     const nextPage = page + 1;
-    const data = await fetchAllStoriesClient({ page: nextPage, sort: 'desc' });
+    const data = await fetchAllStoriesClient({
+      page: nextPage,
+      perPage,
+      sortField,
+      sortOrder,
+    });
 
     setStories((prev) => [...prev, ...data.data.data]);
     setPage(nextPage);

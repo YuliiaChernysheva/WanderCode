@@ -3,19 +3,29 @@ import PopularSectionClient from './PopularSection.client';
 
 type PopularSectionProps = {
   page?: number;
-  sort?: string;
+  perPage?: number;
+  sortOrder?: string;
+  sortField?: string;
 };
 
 export default async function PopularSection({
   page = 1,
-  sort = 'desc',
+  perPage = 3,
+  sortField = 'favoriteCount',
+  sortOrder = 'desc',
 }: PopularSectionProps) {
   const initialData = await fetchAllStoriesServer({
     page,
-    sort,
+    perPage,
+    sortField,
+    sortOrder,
   });
-
-  console.log('server:::::', initialData);
-
-  return <PopularSectionClient initialData={initialData} />;
+  return (
+    <PopularSectionClient
+      initialData={initialData}
+      perPage={3}
+      sortField="favoriteCount"
+      sortOrder="desc"
+    />
+  );
 }

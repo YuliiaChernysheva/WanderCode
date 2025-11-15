@@ -14,6 +14,7 @@ export default function TravelersStoriesItem({
       </div>
       <h3>{story.title}</h3>
       <p>{story.article}</p>
+      <p>{story.favoriteCount}</p>
     </div>
   );
 }
