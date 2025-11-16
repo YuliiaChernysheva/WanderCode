@@ -128,7 +128,7 @@ const TravellersList: React.FC = () => {
           disabled={isFetchingNextPage}
           className={styles.loadMoreButton}
         >
-          {isFetchingNextPage ? <Loader /> : 'Показати ще'}     {' '}
+          {isFetchingNextPage ? <Loader /> : 'Показати ще'}
         </button>
       )}
       {isFetching && !isFetchingNextPage && <Loader />}
