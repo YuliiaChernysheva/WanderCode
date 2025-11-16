@@ -5,15 +5,12 @@ import { getTravellerById } from '@/lib/api/travellersApi';
 import { notFound } from 'next/navigation';
 
 interface TravellerPageProps {
-  params: {
-    travellerId: string;
-  };
+  params: Promise<{ travellerId: string }>;
 }
 
 export default async function TravellerProfilePage({
   params,
 }: TravellerPageProps) {
-  // FIX: Explicitly await params to satisfy Next.js Server Component checks
   const { travellerId } = await params;
 
   if (!travellerId) {
@@ -28,7 +25,7 @@ export default async function TravellerProfilePage({
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>Профіль Мандрівника: {traveller.name}</h1>
+      <h1>Профіль Мандрівніка: {traveller.name}</h1>
 
       {traveller.avatarUrl && (
         <Image

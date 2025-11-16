@@ -20,13 +20,13 @@ export default async function StoryDetailPage(props: StoryPageProps) {
   const searchParams = props.searchParams ? await props.searchParams : {};
 
   if (!storyId) {
-    return <h1>Памылка: Story ID не перададзены</h1>;
+    return <h1>Помилка: Story ID не передано</h1>;
   }
 
   return (
     <div>
-      <h1>Старонка гісторыі</h1>
-      <p>Ідэнтыфікатар гісторыі: {storyId}</p>
+      <h1>Сторінка історії</h1>
+      <p>ID історії: {storyId}</p>
       <pre>{JSON.stringify(searchParams, null, 2)}</pre>
     </div>
   );

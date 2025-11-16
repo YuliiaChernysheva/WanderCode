@@ -6,9 +6,7 @@ import { AxiosError } from 'axios';
 import { nextServer } from '@/lib/api/api';
 
 interface RouteParams {
-  params: {
-    storyId: string;
-  };
+  params: Promise<{ storyId: string }>;
 }
 
 // Helper to compile all cookies into a single string for the external API call
@@ -20,27 +18,28 @@ async function getServerCookiesString(): Promise<string> {
     .join('; ');
 }
 
-// Generic error logging (simplified)
+// Generic error logging
 function logErrorResponse(error: AxiosError) {
   console.error('API Proxy Error Status:', error.response?.status);
   console.error('API Proxy Error Data:', error.response?.data);
 }
 
-// -------- GET /api/stories/[storyId] (Proxy to external API) -------------
+// GET /api/stories/[storyId]
 export async function GET(req: NextRequest, { params }: RouteParams) {
-  const id = params.storyId;
+  const { storyId } = await params;
+
   try {
-    const res = await nextServer.get(`/stories/${id}`, {
+    const res = await nextServer.get(`/stories/${storyId}`, {
       headers: {
         Cookie: await getServerCookiesString(),
       },
     });
-    // Return data received from the external API
+
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     const axiosError = error as AxiosError;
     logErrorResponse(axiosError);
-    // Return the external API's status and error message
+
     return NextResponse.json(
       axiosError.response?.data || { message: 'Server error during GET' },
       { status: axiosError.response?.status || 500 }
@@ -48,18 +47,16 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   }
 }
 
-// -------- PATCH /api/stories/[storyId] (Proxy to external API, handling FormData/Files) -------------
+// PATCH /api/stories/[storyId]
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
-  const id = params.storyId;
+  const { storyId } = await params;
+
   try {
-    // Read the raw FormData from the NextRequest
     const formData = await req.formData();
 
-    // Proxy the FormData directly to the external API using nextServer (Axios)
-    const res = await nextServer.patch(`/stories/${id}`, formData, {
+    const res = await nextServer.patch(`/stories/${storyId}`, formData, {
       headers: {
         Cookie: await getServerCookiesString(),
-        // Axios correctly handles the Content-Type for FormData
       },
     });
 
@@ -67,6 +64,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   } catch (error) {
     const axiosError = error as AxiosError;
     logErrorResponse(axiosError);
+
     return NextResponse.json(
       axiosError.response?.data || { message: 'Server error during PATCH' },
       { status: axiosError.response?.status || 500 }
@@ -74,21 +72,22 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   }
 }
 
-// -------- DELETE /api/stories/[storyId] (Proxy to external API) -------------
+// DELETE /api/stories/[storyId]
 export async function DELETE(req: NextRequest, { params }: RouteParams) {
-  const id = params.storyId;
+  const { storyId } = await params;
 
   try {
-    const res = await nextServer.delete(`/stories/${id}`, {
+    const res = await nextServer.delete(`/stories/${storyId}`, {
       headers: {
         Cookie: await getServerCookiesString(),
       },
     });
-    // Use the status code from the external API, defaulting to 204 (No Content)
+
     return new NextResponse(null, { status: res.status || 204 });
   } catch (error) {
     const axiosError = error as AxiosError;
     logErrorResponse(axiosError);
+
     return NextResponse.json(
       axiosError.response?.data || { message: 'Server error during DELETE' },
       { status: axiosError.response?.status || 500 }
