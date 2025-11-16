@@ -8,6 +8,7 @@ export interface Story {
   ownerId: string;
   date: string;
   favoriteCount: number;
+  isFavorite?: boolean;
 }
 
 export interface StoriesResponse {
