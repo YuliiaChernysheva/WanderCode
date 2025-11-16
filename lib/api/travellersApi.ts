@@ -1,5 +1,6 @@
 // lib/api/travellersApi.ts
 import { nextServer } from './api';
+import { ApiTravellerResponse } from '../store/travellerStore';
 
 export type Traveller = {
   id: string;
@@ -172,3 +173,10 @@ export async function fetchTravellers(
     throw error;
   }
 }
+
+export const getTravellerById = async (travellerId: string) => {
+  const res = await nextServer.get<ApiTravellerResponse>(
+    `/users/${travellerId}`
+  );
+  return res.data.data.user;
+};
