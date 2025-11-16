@@ -3,9 +3,8 @@
 import { User } from '@/types/user';
 import { nextServer } from './api';
 import { StoriesResponse, Story } from '@/types/story';
-import { QueryFunctionContext } from '@tanstack/react-query';
+// import { QueryFunctionContext } from '@tanstack/react-query';
 
-// --- NEW TYPE FOR useInfiniteQuery ---
 export type StoriesPage = {
   stories: Story[];
   nextPage: number | undefined;
@@ -24,10 +23,9 @@ export type AuthorizationRequest = {
 
 const ITEMS_PER_PAGE = 9;
 
-// --- UPDATED FUNCTION: returns StoriesResponse ---
 export async function fetchAllStoriesClient({
-  page,
-  perPage,
+  page = 1,
+  perPage = ITEMS_PER_PAGE,
   filter,
   sortField,
   sortOrder,
@@ -51,28 +49,17 @@ export async function fetchAllStoriesClient({
   return response.data;
 }
 
-// --- NEW FUNCTION FOR useInfiniteQuery ---
-export async function fetchStoriesPage(
-  context: QueryFunctionContext<readonly unknown[], number>
-): Promise<StoriesPage> {
-  const pageParam = (context.pageParam ?? 1) as number;
-
-  const response = await fetchAllStoriesClient({
-    page: pageParam,
-    perPage: ITEMS_PER_PAGE,
-  });
-
-  const { totalPages, page, data } = response.data;
-
-  const nextPage = page < totalPages ? page + 1 : undefined;
-
-  return {
-    stories: data,
-    nextPage: nextPage,
-  };
-}
-
-// ... existing functions
+export const fetchStoriesPage = async ({
+  pageParam,
+  filter,
+}: {
+  pageParam: number;
+  filter: string;
+}): Promise<StoriesPage> => {
+  const res = await fetch(`/api/stories?page=${pageParam}&filter=${filter}`);
+  if (!res.ok) throw new Error('Не ўдалося загрузіць гісторыі');
+  return res.json();
+};
 
 export async function registerUser(data: RegisterRequest): Promise<User> {
   const response = await nextServer.post(`/auth/register`, data);

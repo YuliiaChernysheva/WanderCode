@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: `${process.env.BACKEND_URL}/api`,
+  // Цяпер выкарыстоўваем API_BASE_URL, які ёсць у .env.local
+  baseURL: `${process.env.API_BASE_URL}/api`,
   withCredentials: true,
 });

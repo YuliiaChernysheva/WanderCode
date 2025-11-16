@@ -1,3 +1,4 @@
+// components/AuthNavigation/AuthNavigation.tsx
 'use client';
 
 import Link from 'next/link';
@@ -14,7 +15,7 @@ export default function AuthNavigation() {
     (state) => state.clearIsAuthenticated
   );
 
-  console.log('usbsbvhd:::', isAuthenticated);
+  // console.log('usbsbvhd:::', isAuthenticated);
 
   const handleLogout = async () => {
     await logout();
@@ -31,7 +32,7 @@ export default function AuthNavigation() {
         </li>
         <li>
           <Link
-            href="/createStory"
+            href="/stories/create"
             prefetch={false}
             className={css.navigationLink}
           >

@@ -1,8 +1,10 @@
 // components/TravellersStories/TravellersStories.tsx
+
 'use client';
 
 import { useMemo, useEffect } from 'react';
 import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
 import { fetchStoriesPage, StoriesPage } from '@/lib/api/clientApi';
 import Loader from '@/components/Loader/Loader';
 import StoriesList from '@/components/StoriesList/StoriesList';
@@ -10,6 +12,9 @@ import { showErrorToast } from '@/components/ShowErrorToast/ShowErrorToast';
 import { Story } from '@/types/story';
 
 const TravellersStories = () => {
+  const searchParams = useSearchParams();
+  const filter = searchParams.get('filter') || 'all';
+
   const {
     data,
     isLoading,
@@ -22,11 +27,16 @@ const TravellersStories = () => {
     StoriesPage,
     Error,
     InfiniteData<StoriesPage, number>,
-    readonly unknown[],
+    ['stories', { filter: string }],
     number
   >({
-    queryKey: ['stories'],
-    queryFn: fetchStoriesPage,
+    queryKey: ['stories', { filter }],
+
+    queryFn: ({ pageParam = 1, queryKey }) => {
+      const [, { filter }] = queryKey as ['stories', { filter: string }];
+      return fetchStoriesPage({ pageParam, filter });
+    },
+
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage,
   });
@@ -40,7 +50,7 @@ const TravellersStories = () => {
       const message =
         error instanceof Error
           ? error.message
-          : 'Сталася памылка пры запісе дадзеных';
+          : 'Виникла помилка під час завантаження даних';
       showErrorToast(message);
     }
   }, [isError, error]);
@@ -53,12 +63,17 @@ const TravellersStories = () => {
     );
   }
 
+  const noStoriesMessage =
+    filter === 'all'
+      ? 'Наразі немає жодної історії'
+      : `Наразі немає історій у категорії "${filter}"`;
+
   if (!allStories.length) {
     return (
       <div className="stories-empty">
-        <h2 className="stories-empty__title">Пакуль што няма гісторый</h2>
+        <h2 className="stories-empty__title">{noStoriesMessage}</h2>
         <p className="stories-empty__text">
-          Станьце першым, хто падзеліцца ўласным падарожжам і натхніць іншых!
+          Станьте першим, хто поділиться власною подорожжю та надихне інших!
         </p>
       </div>
     );
@@ -80,10 +95,11 @@ const TravellersStories = () => {
             onClick={handleLoadMore}
             disabled={isFetchingNextPage}
           >
-            {isFetchingNextPage ? 'Загрузка...' : 'Перагледзець яшчэ'}
+            {isFetchingNextPage ? 'Завантаження...' : 'Переглянути ще'}
           </button>
         </div>
       )}
+      {isFetchingNextPage && <Loader />}
     </section>
   );
 };
