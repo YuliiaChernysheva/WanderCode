@@ -147,7 +147,7 @@ export default function AddStoryForm() {
     () => '(max-width: 768px) 100vw, 865px',
     []
   );   if (catLoading) return <Loader />;
-
+console.log(categories);
   return (
     <>
       <section className={styles.wrap}>
