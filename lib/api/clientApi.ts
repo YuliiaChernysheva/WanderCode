@@ -65,7 +65,9 @@ export const getMe = async () => {
 };
 export const checkSession = async (): Promise<boolean> => {
   try {
-    const res = await nextServer.post('/auth/refresh');
+    const res = await nextServer.post('/auth/refresh', {
+      withCredentials: true,
+    });
     return res.status === 200;
   } catch {
     return false;

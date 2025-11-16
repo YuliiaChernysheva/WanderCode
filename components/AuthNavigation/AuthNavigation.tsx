@@ -20,7 +20,6 @@ export default function AuthNavigation() {
     router.replace('/sign-in');
   };
 
-  console.log('isAuthenticated::::', isAuthenticated, user);
   return isAuthenticated ? (
     <>
       <ul className={css.container}>
