@@ -4,7 +4,7 @@ import { parse } from 'cookie';
 import { checkServerSession } from './lib/api/serverApi';
 
 const privateRoutes = ['/profile', '/stories'];
-const publicRoutes = ['/sign-in', '/sign-up'];
+const publicRoutes = ['/auth/login', '/auth/register'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
         }
       }
       // Якщо немає токенів або сесія не вдалася — редірект на /sign-in
-      return NextResponse.redirect(new URL('/sign-in', request.url));
+      return NextResponse.redirect(new URL('/auth/login', request.url));
     }
     // accessToken є — доступ дозволено
     return NextResponse.next();
@@ -64,5 +64,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/profile/:path*', '/sign-in', '/sign-up'],
+  matcher: ['/profile/:path*', '/auth/login', '/auth/register'],
 };

@@ -1,16 +1,17 @@
 'use client';
 
-import css from './SignInPage.module.css';
+import css from './AuthPage.module.css';
 import { AuthorizationRequest, getMe, loginUser } from '@/lib/api/clientApi';
 
 import { useEffect, useState } from 'react';
 import { ApiError } from 'next/dist/server/api-utils';
 import { useAuthStore } from '@/lib/store/authStore';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const [error, setError] = useState('');
   const setUser = useAuthStore((state) => state.setUser);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ export default function LoginForm() {
       if (res) {
         const me = await getMe();
         if (me) setUser(me);
+        router.push('/');
       } else {
         setError('Invalid email or password');
       }
@@ -45,20 +47,6 @@ export default function LoginForm() {
 
   return (
     <main className={css.mainContent}>
-      <ul>
-        <li className={css.navigationItem}>
-          <Link href="/sign-in" prefetch={false} className={css.navigationLink}>
-            Вхід
-          </Link>
-        </li>
-
-        <li className={css.navigationItem}>
-          <Link href="/sign-up" prefetch={false} className={css.navigationLink}>
-            Реєстрація
-          </Link>
-        </li>
-      </ul>
-
       <form onSubmit={handleSubmit} className={css.form}>
         <h1 className={css.formTitle}>Вхід</h1>
         <p className={css.formText}>Вітаємо знову у спільноту мандрівників!</p>

@@ -17,7 +17,7 @@ export default function AuthNavigation() {
   const handleLogout = async () => {
     await logout();
     clearIsAuthenticated();
-    router.replace('/sign-in');
+    router.replace('/');
   };
 
   return isAuthenticated ? (
@@ -62,13 +62,21 @@ export default function AuthNavigation() {
     <>
       <ul>
         <li className={css.navigationItem}>
-          <Link href="/sign-in" prefetch={false} className={css.navigationLink}>
+          <Link
+            href="/auth/login"
+            prefetch={false}
+            className={css.navigationLink}
+          >
             Вхід
           </Link>
         </li>
 
         <li className={css.navigationItem}>
-          <Link href="/sign-up" prefetch={false} className={css.navigationLink}>
+          <Link
+            href="/auth/register"
+            prefetch={false}
+            className={css.navigationLink}
+          >
             Реєстрація
           </Link>
         </li>
