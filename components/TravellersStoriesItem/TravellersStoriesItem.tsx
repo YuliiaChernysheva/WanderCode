@@ -171,7 +171,7 @@ const initiallySaved = Boolean(story.isFavorite);
           </button>
         </div>
       </div>
-    </article>
+      </article>
   );
 };
 
