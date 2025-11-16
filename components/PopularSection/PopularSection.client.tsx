@@ -5,7 +5,7 @@ import { fetchAllStoriesClient } from '@/lib/api/clientApi';
 
 import css from './PopularSection.module.css';
 import { StoriesResponse } from '@/types/story';
-import TravelersStoriesItem from '../TravelersStoriesItem/TravelersStoriesItem';
+import TravelersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem';
 
 type PopularClientProps = {
   initialData: StoriesResponse;
