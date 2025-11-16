@@ -11,6 +11,9 @@ import {showErrorToast} from '@/components/ShowErrorToast/ShowErrorToast';
 import Loader from '@/components/Loader/Loader';
 import styles from './AddStoryForm.module.css';
 import { useField } from 'formik'; 
+import { useQuery } from "@tanstack/react-query";
+import { getCategories } from "@/lib/api/story"; 
+import { Category } from '@/types/story';
 // ---- Лічильник символів для короткого опису
 const ShortDescLiveCounter = () => {
   const [field] = useField<string>('shortDesc');  
@@ -32,12 +35,12 @@ export interface AddStoryFormValues {
 }
 
 // ---- Категорії (підстав свої, якщо є у constants)
-const CATEGORIES = [
-  { value: 'Поради', label: 'Поради' },
-  { value: 'Маршрути', label: 'Маршрути' },
-  { value: 'Лайфхаки', label: 'Лайфхаки' },
-  { value: 'Інше', label: 'Інше' },
-];
+// const CATEGORIES = [
+//   { value: 'Поради', label: 'Поради' },
+//   { value: 'Маршрути', label: 'Маршрути' },
+//   { value: 'Лайфхаки', label: 'Лайфхаки' },
+//   { value: 'Інше', label: 'Інше' },
+// ];
 
 // ---- Валідація
 const schema = Yup.object({
@@ -51,8 +54,7 @@ const schema = Yup.object({
     .min(3, 'мін. 3 символи')
     .max(100, 'макс. 100')
     .required('Обовʼязково'),
-  category: Yup.string()
-    .oneOf(CATEGORIES.map((c) => c.value),'оберіть категорію')
+  category: Yup.string().required("оберіть категорію")
     .required('Обовʼязково'),
   body: Yup.string().trim().min(30, 'мін. 30 символів').required('Обовʼязково'),
 });
@@ -86,11 +88,17 @@ async function createStory(values: AddStoryFormValues): Promise<{ id: string }> 
 export default function AddStoryForm() {
   const router = useRouter();
   const qc = useQueryClient();
+
   const [preview, setPreview] = useState<string | null>(null);
   const [errorOpen, setErrorOpen] = useState(false);
   const [publishedOpen, setPublishedOpen] = useState(false);
   const [createdId, setCreatedId] = useState<string | null>(null);
 
+   // --- Категорії з бекенду
+  const { data: categories, isLoading: catLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
+  });
   const mutation = useMutation<{ id: string }, Error, AddStoryFormValues>({
     mutationFn: createStory,
     onSuccess: async (data) => {
@@ -138,7 +146,7 @@ export default function AddStoryForm() {
   const imgSizes = useMemo(
     () => '(max-width: 768px) 100vw, 865px',
     []
-  );
+  );   if (catLoading) return <Loader />;
 
   return (
     <>
@@ -195,9 +203,9 @@ export default function AddStoryForm() {
                 <span className={styles.label}>Категорія</span>
                 <Field as="select" name="category"  className={`${styles.select} ${values.category === '' ? styles.placeholder : ''}`}>
                  <option value="" disabled>Категорія</option> 
-                  {CATEGORIES.map((c) => (
-                    <option key={c.value} value={c.value}>
-                      {c.label}
+                  {categories?.map((c:Category) => (
+                    <option key={c._id} value={c.value}>
+                      {c.title}
                     </option>
                   ))}
                 </Field>
@@ -262,8 +270,8 @@ export default function AddStoryForm() {
   cancelText="Увійти"
   confirmText="Зареєструватись"
   onClose={() => setErrorOpen(false)}                 // бекдроп/ESC — просто закрити
-  onCancel={() => { setErrorOpen(false); router.push('/login'); }}   // Ліва кнопка
-  onConfirm={() => { setErrorOpen(false); router.push('/register'); }} // Права кнопка
+  onCancel={() => { setErrorOpen(false); router.push('/auth/login'); }}   // Ліва кнопка
+  onConfirm={() => { setErrorOpen(false); router.push('/auth/register'); }} // Права кнопка
 />  
 
 {/* Модалка успішної публікації —*/}

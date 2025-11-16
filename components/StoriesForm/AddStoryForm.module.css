@@ -17,7 +17,7 @@
    display:flex;
   flex-direction:column;
   align-items:flex-start;
-  padding:0 20px 64px 20px;
+  padding:0 20px 64px 160px;
   gap:24px;
   max-width:375px;
 
@@ -240,19 +240,11 @@ margin-top: 8px;
 
    .wrap{
    width: 1440px;
-    padding: 0 64px 72px;
+    padding: 0 64px 72px 160px;
     gap: 24px;
     width: 1440;
-
-
-
   }
-
-
-
   .inner{
-
-
     margin-left:-320px;          
     margin-right:auto;
   }

@@ -42,3 +42,8 @@ export interface NewStory {
   cover?: File;        // при створенні
 }
 
+export interface Category {
+  _id: string;
+  value: string;
+  title: string;
+}
