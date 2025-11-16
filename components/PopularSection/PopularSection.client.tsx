@@ -5,7 +5,7 @@ import { fetchAllStoriesClient } from '@/lib/api/clientApi';
 
 import css from './PopularSection.module.css';
 import { StoriesResponse } from '@/types/story';
-import TravelersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem';
+import TravellersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem';
 
 type PopularClientProps = {
   initialData: StoriesResponse;
@@ -50,7 +50,7 @@ export default function PopularSectionClient({
     <section className={css.section}>
       <div className={css.list}>
         {stories.map((story) => (
-          <TravelersStoriesItem key={story._id} story={story} />
+          <TravellersStoriesItem key={story._id} story={story} />
         ))}
       </div>
 
