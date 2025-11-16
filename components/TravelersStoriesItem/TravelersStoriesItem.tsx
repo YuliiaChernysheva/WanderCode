@@ -18,3 +18,4 @@ export default function TravelersStoriesItem({
     </div>
   );
 }
+//components/TravelersStoriesItem/TravelersStoriesItem.tsx

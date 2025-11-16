@@ -3,7 +3,6 @@
 import { User } from '@/types/user';
 import { nextServer } from './api';
 import { StoriesResponse, Story } from '@/types/story';
-// import { QueryFunctionContext } from '@tanstack/react-query';
 
 export type StoriesPage = {
   stories: Story[];
@@ -52,12 +51,27 @@ export async function fetchAllStoriesClient({
 export const fetchStoriesPage = async ({
   pageParam,
   filter,
+  travellerId,
 }: {
   pageParam: number;
-  filter: string;
+  filter?: string;
+  travellerId?: string;
 }): Promise<StoriesPage> => {
-  const res = await fetch(`/api/stories?page=${pageParam}&filter=${filter}`);
+  const query = new URLSearchParams({
+    page: String(pageParam),
+  });
+
+  if (filter) {
+    query.append('filter', filter);
+  }
+
+  if (travellerId) {
+    query.append('ownerId', travellerId);
+  }
+
+  const res = await fetch(`/api/stories?${query.toString()}`);
   if (!res.ok) throw new Error('Не ўдалося загрузіць гісторыі');
+
   return res.json();
 };
 
