@@ -1,3 +1,4 @@
+import Container from '@/components/Container/Container';
 import AddStoryForm from '@/components/StoriesForm/AddStoryForm';
 
 export const metadata = {
@@ -7,5 +8,11 @@ export const metadata = {
 };
 
 export default async function AddStoryPage() {
-  return <AddStoryForm />;
+  return (
+    <>
+      <Container>
+        <AddStoryForm />
+      </Container>
+    </>
+  );
 }

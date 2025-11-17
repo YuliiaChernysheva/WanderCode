@@ -226,27 +226,7 @@ export default function AddStoryForm() {
                       className={styles.err}
                     />
                   </label>
-                  {/* Короткий опис — показуємо ТІЛЬКИ на моб/планшеті */}
-                  {/* <div className={`${styles.field} ${styles.shortOnly}`}>
-                    <label className={styles.label}>Короткий опис</label>
-                    <Field
-                      as="textarea"
-                      id="shortDesc"
-                      name="shortDesc"
-                      rows={3}
-                      maxLength={61}
-                      placeholder="Введіть короткий опис історії"
-                      className={styles.summaryArea}
-                    />
-                    <ErrorMessage
-                      name="shortDesc"
-                      component="p"
-                      className={styles.err}
-                    /> */}
 
-                  {/* <ShortDescLiveCounter /> */}
-                  {/* </div> */}
-                  {/* Текст */}
                   <label className={styles.field}>
                     <span className={styles.label}>Текст історії</span>
                     <Field
