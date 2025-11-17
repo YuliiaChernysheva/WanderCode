@@ -1,3 +1,11 @@
+.container {
+  box-sizing: border-box;
+  max-width: 375px;
+  width: 100%;
+  padding: 0 32px;
+  margin: 0 auto;
+}
+
 .containerTravellerInfo {
   padding-top: 32px;
 }
@@ -33,6 +41,10 @@
 }
 
 @media screen and (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+
   .containerTravellerInfo {
     display: flex;
     align-items: center;
@@ -54,6 +66,11 @@
 }
 
 @media screen and (min-width: 1440px) {
+  .container {
+    max-width: 1440px;
+    padding: 0 64px;
+  }
+
   .containerTravellerInfo {
     padding-top: 48px;
   }

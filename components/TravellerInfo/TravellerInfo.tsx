@@ -9,7 +9,7 @@ type TravellerInfoProps = {
 
 export default function TravellerInfo({ traveller }: TravellerInfoProps) {
   return (
-    <section className={css.containerTravellerInfo}>
+    <section className={`${css.container} ${css.containerTravellerInfo}`}>
       <Image
         src={traveller.avatarUrl}
         alt={`Photo ${traveller.name}`}
