@@ -120,6 +120,57 @@ export const Header = ({
                 </button>
               </>
             )}
+        <nav className={styles.navDesktop}>
+          <Link href="/">Головна</Link>
+          <Link href="/stories">Історії</Link>
+          <Link href="/travelers">Мандрівники</Link>
+
+          {isAuthenticated && (
+            <>
+              <Link href="/profile">Мій Профіль</Link>
+              <button className={styles.publishBtn}>
+                Опублікувати історію
+              </button>
+            </>
+          )}
+
+          <div className={styles.authButtons}>
+            {!isAuthenticated ? (
+              <>
+                <button
+                  className={styles.loginBtn}
+                  onClick={() => setIsLoginOpen(true)}
+                >
+                  Вхід
+                </button>
+                <button
+                  className={styles.registerBtn}
+                  onClick={() => setIsRegisterOpen(true)}
+                >
+                  Реєстрація
+                </button>
+              </>
+            ) : (
+              <>
+                <div className={styles.userInfo}>
+                  {userAvatar && (
+                    <img
+                      src={userAvatar}
+                      alt="avatar"
+                      className={styles.avatar}
+                    />
+                  )}
+                  <span>{userName}</span>
+                </div>
+                <button
+                  className={styles.logoutBtn}
+                  onClick={handleLogout}
+                  title="Вихід"
+                >
+                  <FiLogOut size={20} />
+                </button>
+              </>
+            )}
           </div>
         </nav>
 
