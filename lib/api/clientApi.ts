@@ -58,21 +58,8 @@ export const fetchStoriesPage = async ({
   filter?: string;
   travellerId?: string;
 }): Promise<StoriesPage> => {
-  const query = new URLSearchParams({
-    page: String(pageParam),
-  });
-
-  if (filter) {
-    query.append('filter', filter);
-  }
-
-  if (travellerId) {
-    query.append('ownerId', travellerId);
-  }
-
-  const res = await fetch(`/api/stories?${query.toString()}`);
-  if (!res.ok) throw new Error('Не ўдалося загрузіць гісторыі');
-
+  const res = await fetch(`/api/stories?page=${pageParam}&filter=${filter}`);
+  if (!res.ok) throw new Error('Не вдалося завантажити історії');
   return res.json();
 };
 
@@ -118,7 +105,7 @@ export const logout = async (): Promise<void> => {
 
 export async function addStoryToSaved(storyId: string): Promise<void> {
   try {
-    await nextServer.post('/saved', { storyId });
+    await nextServer.post('/users/saved', { storyId });
   } catch (error: unknown) {
     let message = 'Не вдалося додати в збережені';
     if (error instanceof Error) {
@@ -130,7 +117,7 @@ export async function addStoryToSaved(storyId: string): Promise<void> {
 
 export async function removeStoryFromSaved(storyId: string): Promise<void> {
   try {
-    await nextServer.delete('/saved', { data: { storyId } });
+    await nextServer.delete('/users/saved', { data: { storyId } });
   } catch (error: unknown) {
     let message = 'Не вдалося видалити із збережених';
     if (error instanceof Error) {
@@ -171,6 +158,18 @@ export const fetchStoryById = async (id: string): Promise<DetailedStory> => {
 };
 
 export const saveStory = async (id: string) => {
-  const response = await nextServer.post(`/stories/save/${id}`);
-  return response.data;
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/stories/save/${id}`,
+      {},
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error: unknown) {
+    let message = 'Не вдалося зберегти історію';
+    if (error instanceof Error) {
+      message = error.message || message;
+    }
+    throw new Error(message);
+  }
 };

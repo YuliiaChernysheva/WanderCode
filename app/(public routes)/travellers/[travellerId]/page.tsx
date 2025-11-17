@@ -1,11 +1,12 @@
 import React from 'react';
-import { getTravellerById, Traveller } from '@/lib/api/travellersApi';
+import { getTravellerById } from '@/lib/api/travellersApi';
 import { notFound } from 'next/navigation';
+import css from './page.module.css';
 import Container from '@/components/Container/Container';
-import TravellerInfo from '@/components/Travellers/TravellerInfo/TravellerInfo';
-import TravellerProfileStories from '@/components/Travellers/TravellerProfileStories/TravellerProfileStories';
-import { isAxiosError } from 'axios';
-export const dynamic = 'force-dynamic';
+import { TravellersInfo } from '@/components/TravellersInfo/TravellersInfo';
+import MessageNoStories from '@/components/MessageNoStories/MessageNoStories';
+// import TravellersStories from '@/components/TravellersStories/TravellersStories';
+import { fetchAllStoriesServer } from '@/lib/api/serverApi';
 
 // Use unknown for props and await params to satisfy Next.js runtime requirement
 export default async function TravellerProfilePage(props: unknown) {
@@ -17,17 +18,11 @@ export default async function TravellerProfilePage(props: unknown) {
     return notFound();
   }
 
-  let traveller: Traveller | null = null;
-  try {
-    traveller = await getTravellerById(travellerId);
-  } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 404) {
-      return notFound();
-    }
-    // Log and rethrow so that Next.js can surface the error (or you can render an error UI)
-    console.error(`Помилка завантаження профілю ${travellerId}:`, error);
-    throw error;
-  }
+  const filter = travellerId;
+  const traveller = await getTravellerById(travellerId);
+  const stories = await fetchAllStoriesServer({ filter });
+  const isStories = stories && stories.data && stories.data.totalItems > 0;
+  console.log('stories', stories);
 
   if (!traveller) {
     return notFound();
@@ -35,12 +30,17 @@ export default async function TravellerProfilePage(props: unknown) {
 
   return (
     <Container>
-      <div style={{ paddingTop: '40px', paddingBottom: '40px' }}>
-        <TravellerInfo traveller={traveller} />
-        <TravellerProfileStories
-          travellerId={traveller._id}
-          travellerName={traveller.name}
-        />
+      <div className={css.profile}>
+        <TravellersInfo traveller={traveller} />
+        <h2 className={css.title}>Історії Мандрівника</h2>
+        {isStories ? (
+          <div>Є історії</div> // замінити на TravellersStories
+        ) : (
+          <MessageNoStories
+            text={'Цей користувач ще не публікував історій'}
+            buttonText={'Назад до історій'}
+          />
+        )}
       </div>
     </Container>
   );
