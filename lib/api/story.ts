@@ -1,6 +1,6 @@
 // lib/api/story.ts
 
-import type { StoriesResponse} from '@/types/story';
+import type { StoriesResponse } from '@/types/story';
 import { api } from './api';
 import { AddStoryFormValues } from '@/components/StoriesForm/AddStoryForm';
 import type { Story } from '@/types/story';
