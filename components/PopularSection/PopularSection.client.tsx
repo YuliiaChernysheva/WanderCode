@@ -6,7 +6,7 @@ import { fetchAllStoriesClient, getMe } from '@/lib/api/clientApi';
 import css from './PopularSection.module.css';
 import { StoriesResponse, Story } from '@/types/story';
 import TravellersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 type PopularClientProps = {
   initialData: StoriesResponse;
@@ -31,41 +31,56 @@ export default function PopularSectionClient({
   sortField,
   sortOrder,
 }: PopularClientProps) {
-  // 🟦 Локальні стани (заповнюємо серверними даними)
+  const queryClient = useQueryClient();
+
   const [stories, setStories] = useState<Story[]>(initialData.data.data ?? []);
-  const [selectedStories, setSelectedStories] = useState<string[]>(
-    initialUser ?? []
-  );
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(
     initialData.data.hasNextPage ?? false
   );
   const [loading, setLoading] = useState(false);
 
-  // 🟦 Автоматичне оновлення сторінок, якщо зміниться сортування
+  const { data: userData } = useQuery<UserDataResponse>({
+    queryKey: ['user'],
+    queryFn: getMe,
+    initialData: initialUser ? { selectedStories: initialUser } : undefined,
+    staleTime: Infinity,
+  });
+
   useQuery({
     queryKey: ['stories', page, perPage, sortField, sortOrder],
     queryFn: () =>
       fetchAllStoriesClient({ page, perPage, sortField, sortOrder }),
     initialData: initialData,
-    enabled: false, // ❗ Цей useQuery тут не повинен запускатися автоматично
+    enabled: false,
   });
 
-  // 🟦 Оновлення списку вибраних історій
+  const selectedStories = userData?.selectedStories ?? [];
+
   const updateSelectedStories = useCallback(
     (storyId: string, isAdding: boolean) => {
-      setSelectedStories((prevIds) =>
-        isAdding
-          ? prevIds.includes(storyId)
-            ? prevIds
-            : [...prevIds, storyId]
-          : prevIds.filter((id) => id !== storyId)
+      queryClient.setQueryData<UserDataResponse | undefined>(
+        ['user'],
+        (prevData) => {
+          if (!prevData) return prevData;
+
+          let newSelectedStories;
+          if (isAdding) {
+            newSelectedStories = prevData.selectedStories.includes(storyId)
+              ? prevData.selectedStories
+              : [...prevData.selectedStories, storyId];
+          } else {
+            newSelectedStories = prevData.selectedStories.filter(
+              (id) => id !== storyId
+            );
+          }
+          return { ...prevData, selectedStories: newSelectedStories };
+        }
       );
     },
-    []
+    [queryClient]
   );
 
-  // 🟦 Завантажити більше історій
   const loadMore = async () => {
     if (loading) return;
     setLoading(true);
@@ -73,22 +88,18 @@ export default function PopularSectionClient({
     const nextPage = page + 1;
 
     try {
-      const [storiesData, userDataRaw] = await Promise.all([
-        fetchAllStoriesClient({
-          page: nextPage,
-          perPage,
-          sortField,
-          sortOrder,
-        }),
-        getMe(),
-      ]);
-
-      const userData = (userDataRaw ?? {}) as UserDataResponse;
+      const storiesData = await fetchAllStoriesClient({
+        page: nextPage,
+        perPage,
+        sortField,
+        sortOrder,
+      });
 
       setStories((prev) => [...prev, ...storiesData.data.data]);
-      setSelectedStories(userData.selectedStories ?? []);
       setPage(nextPage);
       setHasNextPage(storiesData.data.hasNextPage);
+
+      // Не трэба выклікаць getMe(), бо стан карыстальніка падтрымліваецца useQuery
     } catch (err) {
       console.error('Помилка завантаження наступної сторінки:', err);
     }
@@ -125,3 +136,4 @@ export default function PopularSectionClient({
     </div>
   );
 }
+// components/PopularSection/PopularSection.client.tsx
