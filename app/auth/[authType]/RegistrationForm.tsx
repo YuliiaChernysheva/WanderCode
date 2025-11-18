@@ -5,6 +5,12 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 import styles from "./AuthForm.module.css";
+import css from './AuthPage.module.css';
+import { getMe, RegisterRequest, registerUser } from '@/lib/api/clientApi';
+import { useState } from 'react';
+import { ApiError } from 'next/dist/server/api-utils';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useRouter } from 'next/navigation';
 
 interface RegistrationFormProps {
   onToggle?: () => void; // 🔥 додано для Header
@@ -17,6 +23,17 @@ const RegistrationSchema = Yup.object().shape({
     .min(6, "Мінімум 6 символів")
     .required("Пароль обов’язковий"),
 });
+      if (res) {
+        const me = await getMe();
+        if (me) setUser(me);
+        router.push('/');
+      } else {
+        setError('Invalid email or password');
+      }
+    } catch (error) {
+      setError((error as ApiError).message ?? 'Oops... some error');
+    }
+  };
 
 export default function RegistrationForm({ onToggle }: RegistrationFormProps) {
   return (
@@ -68,6 +85,21 @@ export default function RegistrationForm({ onToggle }: RegistrationFormProps) {
               className={styles.error}
             />
           </motion.div>
+    <main className={css.mainContent}>
+      <h1 className={css.formTitle}>Реєстрація</h1>
+      <p className={css.formText}>Раді вас бачити у спільноті мандрівників!</p>
+      <form onSubmit={handleSubmit} className={css.form}>
+        <div className={css.formGroup}>
+          <label htmlFor="name">Імʼя та Прізвище*</label>
+          <input
+            id="name"
+            type="name"
+            name="name"
+            className={css.input}
+            required
+            placeholder="Ваше імʼя та прізвище"
+          />
+        </div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}

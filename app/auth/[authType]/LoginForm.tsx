@@ -9,6 +9,13 @@ import styles from "./AuthForm.module.css";
 interface LoginFormProps {
   onToggle?: () => void;
 }
+import css from './AuthPage.module.css';
+import { AuthorizationRequest, getMe, loginUser } from '@/lib/api/clientApi';
+
+import { useState } from 'react';
+import { ApiError } from 'next/dist/server/api-utils';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useRouter } from 'next/navigation';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Невірний email").required("Email обов’язковий"),
@@ -70,6 +77,34 @@ export default function LoginForm({ onToggle }: LoginFormProps) {
               className={styles.error}
             />
           </motion.div>
+      if (res) {
+        const me = await getMe();
+        if (me) setUser(me);
+        router.push('/');
+      } else {
+        setError('Invalid email or password');
+      }
+    } catch (error) {
+      setError((error as ApiError).message ?? 'Oops... some error');
+    }
+  };
+
+  return (
+    <main className={css.mainContent}>
+      <h1 className={css.formTitle}>Вхід</h1>
+      <p className={css.formText}>Вітаємо знову у спільноту мандрівників!</p>
+      <form onSubmit={handleSubmit} className={css.form}>
+        <div className={css.formGroup}>
+          <label htmlFor="email">Пошта*</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            className={css.input}
+            required
+            placeholder="hello@podorozhnyky.ua"
+          />
+        </div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
