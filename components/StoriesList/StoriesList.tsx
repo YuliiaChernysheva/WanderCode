@@ -1,18 +1,18 @@
 // components/StoriesList/StoriesList.tsx
+'use client';
+
 import React from 'react';
 import { Story } from '@/types/story';
-// ✅ 1. ІМПАРТУЕМ КАМПАНЕНТ ДЛЯ АДЛЮСТРАВАННЯ ЭЛЕМЕНТАЎ
-import TravellersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem';
+import TravellersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem'; // Мяркуецца, што ён існуе
+import styles from './StoriesList.module.css'; // Тут павінны быць стылі stories-list-grid
 
-// Паколькі TravellersStoriesItem чакае isFavorite, мы выкарыстоўваем тып,
-// які гарантуе гэта (пры ўмове, што ён ёсць у Story або яго пашырэнні)
+// Тып для перадачы ў TravellersStoriesItem
 interface StoryWithStatus extends Story {
   isFavorite: boolean;
 }
 
 interface StoriesListProps {
-  stories: (StoryWithStatus | null | undefined)[]; // Выкарыстоўваем StoryWithStatus
-  // ✅ 2. ПРАПС ДЛЯ АБНАЎЛЕННЯ ЗАКЛАДАК
+  stories: (StoryWithStatus | null | undefined)[];
   onToggleSuccess: (storyId: string, isAdding: boolean) => void;
 }
 
@@ -25,29 +25,23 @@ const StoriesList: React.FC<StoriesListProps> = ({
   }
 
   return (
-    <div className="stories-list-grid">
-           {' '}
+    <div className={styles['stories-list-grid']}>
       {stories.map((story, index) => {
         if (!story) {
           return null;
-        }
+        } // Выкарыстоўваем _id ці індэкс у якасці ключа
 
         const key = story._id || index;
 
         return (
           <div key={key}>
-                       {' '}
-            {/* ✅ 3. ВЫКАРЫСТОЎВАЕМ TravellersStoriesItem ДЛЯ АДЛЮСТРАВАННЯ */}
-                       {' '}
-            <TravellersStoriesItem
+            <TravellersStoriesItem // Пераканаўшыся, што тып правільны
               story={story as StoryWithStatus}
               onToggleSuccess={onToggleSuccess}
             />
-                     {' '}
           </div>
         );
       })}
-         {' '}
     </div>
   );
 };

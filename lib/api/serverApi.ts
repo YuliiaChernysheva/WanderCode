@@ -1,4 +1,5 @@
-// lib/api/serverApi.ts
+// lib/api/serverApi.ts (Вяртаем да чыстага стану)
+
 import { cookies } from 'next/headers';
 import { api } from './api';
 import { Category, StoriesResponse } from '@/types/story';
@@ -6,16 +7,15 @@ import { AxiosResponse } from 'axios';
 import { User } from '@/types/user';
 
 async function getServerCookies(): Promise<string> {
-  // 💡 ВЫПРАЎЛЕННЕ: Карэктны выклік cookies() у асінхроннай функцыі
   const cookieStore = await cookies();
 
   const cookieString = cookieStore
-    .getAll() // Дадаем тыпізацыю для пазбягання памылкі 7031
+    .getAll()
     .map(
       (cookie: { name: string; value: string }) =>
         `${cookie.name}=${cookie.value}`
     )
-    .join('; '); // ДЭБАГ: Паказвае, што Next.js Server адпраўляе на Бэкэнд
+    .join('; ');
 
   if (cookieString) {
     console.log('SERVER DEBUG: Cookies being sent to Backend:', cookieString);
@@ -58,7 +58,6 @@ export async function fetchAllStoriesServer({
       sortOrder,
     },
     headers: {
-      // Перадаем Cookie, каб бачыць захаваныя гісторыі, калі карыстальнік аўтэнтыфікаваны
       Cookie: await getServerCookies(),
     },
   });
@@ -70,24 +69,22 @@ export async function fetchAllStoriesServer({
 
 export const getMeServer = async (): Promise<User | null> => {
   try {
-    // Выклік, які прыводзіць да памылкі 401, калі Cookie несапраўдныя
     const res = await api.get<User>('/users/current', {
       headers: {
-        Cookie: await getServerCookies(), // Cookie лагуюцца ў гэтай функцыі
+        Cookie: await getServerCookies(),
       },
     });
 
-    // Калі атрымалі 200 OK
     console.log('SERVER DEBUG: User fetched successfully (200 OK).');
 
     return res.data;
   } catch (error) {
-    // Гэта лагаванне паведаміць нам пра памылку 401
     console.error('Failed to fetch user on server:', error);
     return null;
   }
 };
 
+// 🛑 Пакідаем функцыю тут, але яна не выклікаецца нідзе пасля адкату.
 export interface CategoryResponse {
   status: number;
   message: string;

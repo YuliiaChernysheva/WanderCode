@@ -27,7 +27,7 @@ export default async function TravellerProfilePage(props: unknown) {
       ? stories
       : {
           data: {
-            items: [],
+            data: [], // Выкарыстоўваем 'data' замест 'items' для масіва гісторый
             totalItems: 0,
             totalPages: 1,
             currentPage: 1,

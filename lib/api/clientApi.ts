@@ -2,13 +2,11 @@
 'use client';
 import { User } from '@/types/user';
 import { api } from './api';
-import { StoriesResponse, Story, DetailedStory } from '@/types/story';
+import { StoriesResponse, Story, DetailedStory, Category } from '@/types/story';
 import axios from 'axios';
 
-// ✅ РЭЭКСПАРТ: Робім імпартаваныя тыпы даступнымі для іншых модуляў
-export type { StoriesResponse, Story, DetailedStory };
+export type { StoriesResponse, Story, DetailedStory, Category };
 
-// ✅ ВЫПРАЎЛЕННЕ: Пашыраем StoriesPage для адпаведнасці структуры адказу і useInfiniteQuery
 export type StoriesPage = {
   stories: Story[];
   totalItems: number;
@@ -56,27 +54,44 @@ export async function fetchAllStoriesClient({
   return response.data;
 }
 
+// ✅ ВЫПРАЎЛЕННЕ ПАМЫЛКІ 2353: Дададзеныя perPage, sortField і sortOrder у тыпізацыю аргументаў
 export const fetchStoriesPage = async ({
   pageParam,
   filter,
+  travellerId,
+  perPage, // ✅ ДАДАДЗЕНА
+  sortField, // ✅ ДАДАДЗЕНА
+  sortOrder, // ✅ ДАДАДЗЕНА
 }: {
   pageParam: number;
   filter?: string;
   travellerId?: string;
+  perPage?: number; // ✅ ДАДАДЗЕНА
+  sortField?: string; // ✅ ДАДАДЗЕНА
+  sortOrder?: string; // ✅ ДАДАДЗЕНА
 }): Promise<StoriesPage> => {
   // Выкарыстоўваем адносны шлях да Next.js API Proxy Route Handler
-  const res = await fetch(`/api/stories?page=${pageParam}&filter=${filter}`);
+  // 💡 ВЫПРАЎЛЕННЕ: Дадаем perPage і sortField/sortOrder у URL для перадачы ў Route Handler
+  const params = new URLSearchParams({
+    page: String(pageParam),
+    ...(filter && { filter }),
+    ...(travellerId && { travellerId }),
+    ...(perPage && { perPage: String(perPage) }), // ПАВІНЕН БЫЦЬ ЛІК
+    ...(sortField && { sortField }),
+    ...(sortOrder && { sortOrder }),
+  }).toString();
+
+  const res = await fetch(`/api/stories?${params}`);
   if (!res.ok) throw new Error('Не вдалося завантажыць гісторыі');
 
-  const fullResponse: StoriesResponse = await res.json(); // fullResponse.data - гэта аб'ект, які змяшчае пагінацыйныя дадзеныя
+  const fullResponse: StoriesResponse = await res.json();
   const paginationData = fullResponse.data;
 
   return {
-    // ✅ ВЫПРАЎЛЕННЕ: Цяпер выкарыстоўваем paginationData.data (як мы высветлілі ў логах)
     stories: paginationData.data,
     totalItems: paginationData.totalItems,
     totalPages: paginationData.totalPages,
-    currentPage: paginationData.page, // Пагінацыйны нумар старонкі называецца 'page'
+    currentPage: paginationData.page,
     nextPage:
       paginationData.page < paginationData.totalPages
         ? paginationData.page + 1
@@ -147,6 +162,27 @@ export async function removeStoryFromSaved(storyId: string): Promise<void> {
     throw new Error(message);
   }
 }
+
+export async function toggleStoryBookmark(
+  storyId: string,
+  isCurrentlySaved: boolean
+): Promise<void> {
+  if (isCurrentlySaved) {
+    await removeStoryFromSaved(storyId);
+  } else {
+    await addStoryToSaved(storyId);
+  }
+}
+
+export const fetchUserById = async (id: string): Promise<User> => {
+  try {
+    const response = await api.get(`/users/${id}`);
+    return response.data.data;
+  } catch (error: unknown) {
+    console.error('Помилка fetchUserById:', error);
+    throw new Error('Не вдалося завантажыць дадзеныя карыстальніка');
+  }
+};
 
 export const fetchStoryById = async (id: string): Promise<DetailedStory> => {
   try {

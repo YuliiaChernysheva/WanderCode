@@ -1,5 +1,4 @@
 // components/TravellersStories/TravellersStories.tsx
-
 'use client';
 
 import { useMemo, useEffect } from 'react';
@@ -14,6 +13,9 @@ import StoriesList from '@/components/StoriesList/StoriesList';
 import { showErrorToast } from '@/components/ShowErrorToast/ShowErrorToast';
 import { Story } from '@/types/story';
 
+// ✅ ІМПАРТУЕМ СТЫЛІ
+import styles from './TravellersStories.module.css';
+
 interface StoryWithStatus extends Story {
   isFavorite: boolean;
 }
@@ -27,13 +29,7 @@ const TravellersStories = ({
   initialStories,
   filter,
 }: TravellersStoriesProps) => {
-  console.log('INITIAL STORIES PROPS:', initialStories); // ✅ ТЭСТ: ПРАВЕРКА ЗМЕСТУ МАГЧЫМАГА МАСІВА ГІСТОРЫЙ
-  console.log(
-    'INITIAL STORIES ITEMS LENGTH:',
-    initialStories?.data?.data?.length
-  );
-
-  const data = initialStories?.data;
+  const data = initialStories?.data; // Канвертацыя серверных дадзеных у фармат, які чакае React Query
 
   const initialPage: StoriesPage = {
     stories: data?.data || [],
@@ -68,7 +64,7 @@ const TravellersStories = ({
     queryKey: ['travellerStories', { filter }],
 
     queryFn: ({ pageParam = 1 }) => {
-      return fetchStoriesPage({ pageParam, filter });
+      return fetchStoriesPage({ pageParam: pageParam as number, filter });
     },
 
     initialPageParam: initialPage.nextPage || 1,
@@ -77,10 +73,7 @@ const TravellersStories = ({
   });
 
   const allStories: StoryWithStatus[] = useMemo(() => {
-    // 🛑 ВЯРТАЕМ АРЫГІНАЛЬНАЕ ЗДАБЫВАННЕ, бо fetchStoriesPage ужо зрабіў пераўтварэнне
     const stories = queryData?.pages.flatMap((page) => page.stories) ?? [];
-    // ✅ ДЫЯГНОСТЫКА: праверым даўжыню масіва
-    console.log('Stories in useMemo (Length):', stories.length);
 
     return stories
       .filter((story): story is Story => !!story)
@@ -99,12 +92,9 @@ const TravellersStories = ({
       showErrorToast(message);
     }
   }, [isError, error]);
-  // ✅ ДЫЯГНОСТЫКА: пасля useMemo, перад рэндэрынгам
-  console.log('ALL STORIES LENGTH (Final):', allStories.length);
-  console.log('HAS NEXT PAGE:', hasNextPage);
   if (isLoading) {
     return (
-      <div className="stories-loader">
+      <div className={styles.storiesLoader}>
         <Loader />
       </div>
     );
@@ -114,10 +104,10 @@ const TravellersStories = ({
 
   if (!allStories.length && !hasNextPage) {
     return (
-      <div className="stories-empty">
-        <h2 className="stories-empty__title">{noStoriesMessage}</h2>
-        <p className="stories-empty__text">
-          Станьце першим, хто поділиться власною подорожжю та надихне інших!
+      <div className={styles.storiesEmpty}>
+        <h2 className={styles.storiesEmpty__title}>{noStoriesMessage}</h2>
+        <p className={styles.storiesEmpty__text}>
+          Станьце першим, хто поділиться власною подорожжю та надихне іншых!
         </p>
       </div>
     );
@@ -133,13 +123,13 @@ const TravellersStories = ({
   };
 
   return (
-    <section className="stories">
+    <section className={styles.stories}>
       <StoriesList stories={allStories} onToggleSuccess={handleToggleSuccess} />
       {hasNextPage && (
-        <div className="stories__load-more-wrap">
+        <div className={styles.loadMoreWrap}>
           <button
             type="button"
-            className="stories__load-more-btn"
+            className={styles.loadMoreBtn}
             onClick={handleLoadMore}
             disabled={isFetchingNextPage}
           >
@@ -147,7 +137,7 @@ const TravellersStories = ({
           </button>
         </div>
       )}
-      {isFetchingNextPage && <Loader />}   {' '}
+      {isFetchingNextPage && <Loader />}
     </section>
   );
 };
