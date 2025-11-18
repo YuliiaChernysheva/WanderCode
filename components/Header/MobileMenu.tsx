@@ -26,8 +26,13 @@ export const MobileMenu = ({
       <div className={styles.menu} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <div className={styles.logo}>
-            <svg width="24" height="24" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" fill="#1a5cff" />
+            <svg
+              className={styles.logo}
+              width="22"
+              height="22"
+              aria-hidden="true"
+            >
+              <use href="/symbol-defs.svg#icon-logo" />
             </svg>
             Подорожники
           </div>
