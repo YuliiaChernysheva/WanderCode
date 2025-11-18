@@ -3,10 +3,11 @@
   display: flex;
   flex-direction: column;
 }
+
 .authContainer {
-  /* max-width: 644px; */
   padding: 64px 0 77px;
 }
+
 .authNavList {
   display: flex;
   justify-content: space-between;
@@ -27,18 +28,19 @@
 .authNavItem a {
   text-decoration: none;
   color: var(--color-scheme-1-text);
-  font-size: 18px;
+  font-size: 16px;
   line-height: 150%;
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
 }
 
 .active {
   border-bottom: 1px solid var(--color-scheme-1-border);
 }
+
 /* form */
 .mainContent {
   flex: 1;
@@ -60,6 +62,7 @@
   color: var(--color-scheme-1-text);
   margin-bottom: 24px;
 }
+
 .formText {
   font-family: var(--font-family);
   font-weight: 400;
@@ -77,6 +80,7 @@
   font-weight: 500;
   color: #212529;
 }
+
 .formGroup label {
   font-family: var(--font-family);
   font-weight: 400;
@@ -135,6 +139,7 @@
   padding-inline: 12px;
   width: 100%;
   height: 44px;
+  cursor: pointer;  
 }
 
 .submitButton:hover {
@@ -158,6 +163,7 @@
   flex-direction: column;
   align-items: center;
 }
+
 .logo {
   display: flex;
   align-items: center;
@@ -173,12 +179,12 @@
   line-height: 110%;
   letter-spacing: -0.01em;
 }
+
 /*layout  */
 .header {
   display: flex;
   justify-content: start;
   padding: 25px 0 25px 3px;
-  /* margin-bottom: 82px; */
 }
 
 .footer {
@@ -190,4 +196,41 @@
   color: var(--color-scheme-1-text);
   padding: 27px 0;
   margin-top: auto;
+}
+
+@media screen and (min-width: 768px) {
+  .authContainer {
+    padding: 64px 30px 146px 30px;
+  }
+
+  .formTitle {
+    font-size: 44px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .authContainer {
+    padding: 64px 334px 111px 334px;
+  }
+
+  .formTitle {
+    font-size: 52px;
+  }
+
+  .formText {
+    font-size: 20px;
+  }
+
+  .formGroup label {
+    font-size: 18px;
+  }
+
+  .input {
+    font-size: 18px;
+    height: 43px;
+  }
+
+  .submitButton {
+    font-size: 18px;
+  }
 }
