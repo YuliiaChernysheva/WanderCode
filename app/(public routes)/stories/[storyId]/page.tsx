@@ -1,37 +1,44 @@
-// app/(public routes)/stories/[storyId]/page.tsx
-
-import { fetchStoryById } from '@/lib/api/clientApi';
-import { StoryDetailsClient } from './routesStory.client';
+import { notFound } from 'next/navigation';
+import { fetchStoryByIdServer } from '@/lib/api/serverApi';
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from '@tanstack/react-query';
+import { StoryDetailsClient } from './StoryDetailsClient';
 import PopularSection from '@/components/PopularSection/PopularSection';
+import mongoose from 'mongoose';
 
-type Props = {
-  params: { storyId: string };
+type StoryPageProps = {
+  params?: {
+    storyId?: string;
+  };
 };
 
-export default async function StoryPage({ params }: Props) {
-  const resolvedParams = await params;
-  const { storyId } = resolvedParams;
+export default async function StoryPage({ params }: StoryPageProps) {
+  const storyId = params?.storyId?.trim();
 
-  // Створюємо клієнт для prefetching даних
+  // Перевірка валідності MongoDB ObjectId
+  if (!storyId || !mongoose.Types.ObjectId.isValid(storyId)) {
+    return notFound();
+  }
+
   const queryClient = new QueryClient();
 
-  // Завантажуємо дані про конкретну історію з бекенду на сервері
-  await queryClient.prefetchQuery({
-    queryKey: ['story', storyId],
-    queryFn: () => fetchStoryById(storyId),
-  });
+  try {
+    // Prefetch story для SSR
+    await queryClient.prefetchQuery({
+      queryKey: ['story', storyId],
+      queryFn: () => fetchStoryByIdServer(storyId),
+    });
+  } catch {
+    // Якщо story не знайдено на сервері
+    return notFound();
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      {/* Деталі історії */}
       <StoryDetailsClient storyId={storyId} />
-
-      {/* Блок популярних статей */}
       <PopularSection />
     </HydrationBoundary>
   );
