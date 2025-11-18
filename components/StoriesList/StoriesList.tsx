@@ -3,11 +3,9 @@
 
 import React from 'react';
 import { Story } from '@/types/story';
-import TravellersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem'; // Мяркуецца, што ён існуе
-import styles from './StoriesList.module.css'; // Тут павінны быць стылі stories-list-grid
-
-// Тып для перадачы ў TravellersStoriesItem
-interface StoryWithStatus extends Story {
+import TravellersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem';
+import styles from './StoriesList.module.css';
+export interface StoryWithStatus extends Story {
   isFavorite: boolean;
 }
 
@@ -29,14 +27,14 @@ const StoriesList: React.FC<StoriesListProps> = ({
       {stories.map((story, index) => {
         if (!story) {
           return null;
-        } // Выкарыстоўваем _id ці індэкс у якасці ключа
+        }
 
         const key = story._id || index;
 
         return (
           <div key={key}>
-            <TravellersStoriesItem // Пераканаўшыся, што тып правільны
-              story={story as StoryWithStatus}
+            <TravellersStoriesItem
+              story={story} // Тут TypeScript вже не сваритиметься
               onToggleSuccess={onToggleSuccess}
             />
           </div>

@@ -4,7 +4,7 @@ import { logErrorResponse } from '../../_utils/utils';
 import { AxiosError } from 'axios';
 
 interface RouteParams {
-  params: { usersId: string };
+  params: Promise<{ usersId: string }>;
 }
 
 export async function GET(req: NextRequest, { params }: RouteParams) {

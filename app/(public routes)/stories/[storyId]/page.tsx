@@ -9,12 +9,13 @@ import {
 import { StoryDetailsClient } from './StoryDetailsClient';
 import PopularSection from '@/components/PopularSection/PopularSection';
 
-export default async function StoryPage({
-  params,
-}: {
-  params: { storyId: string };
-}) {
-  const storyId = params.storyId?.trim();
+interface PageProps {
+  params: Promise<{ storyId: string }>;
+}
+
+export default async function StoryPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const storyId = resolvedParams.storyId?.trim();
 
   if (!storyId) {
     return notFound();

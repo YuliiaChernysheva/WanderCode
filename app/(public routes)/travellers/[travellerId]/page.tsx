@@ -9,9 +9,13 @@ import MessageNoStories from '@/components/MessageNoStories/MessageNoStories';
 import TravellersStories from '@/components/TravellersStories/TravellersStories';
 import { fetchAllStoriesServer } from '@/lib/api/serverApi';
 
-export default async function TravellerProfilePage(props: unknown) {
-  const params = await (props as { params?: { travellerId?: string } })?.params;
-  const travellerId = params?.travellerId;
+interface PageProps {
+  params: Promise<{ storyId: string }>;
+}
+
+export default async function TravellerProfilePage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const travellerId = resolvedParams.storyId?.trim();
 
   if (!travellerId) {
     return notFound();

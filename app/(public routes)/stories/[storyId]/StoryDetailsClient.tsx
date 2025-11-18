@@ -10,11 +10,11 @@ import MessageNoStories from '@/components/MessageNoStories/MessageNoStories';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
-type Props = {
+interface PageParams {
   storyId: string;
-};
+}
 
-export function StoryDetailsClient({ storyId }: Props) {
+export function StoryDetailsClient({ storyId }: PageParams) {
   const queryClient = useQueryClient();
   const [imgSrc, setImgSrc] = useState<string>('/file.svg');
 

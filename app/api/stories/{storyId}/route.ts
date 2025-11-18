@@ -4,9 +4,8 @@ import { AxiosError, isAxiosError } from 'axios';
 
 import { api } from '../../api';
 
-// ✅ Выпраўлены тып: params - гэта аб'ект, а не Promise
 interface RouteParams {
-  params: { storyId: string };
+  params: Promise<{ storyId: string }>;
 }
 
 function logErrorResponse(error: AxiosError) {
@@ -15,7 +14,7 @@ function logErrorResponse(error: AxiosError) {
 }
 
 export async function GET(req: NextRequest, { params }: RouteParams) {
-  const { storyId } = params;
+  const { storyId } = await params;
 
   if (!storyId) {
     return NextResponse.json(
@@ -50,8 +49,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
 // PATCH /api/stories/[storyId]
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
-  const { storyId } = params;
-  const cookieStore = cookies();
+  const { storyId } = await params;
+  const cookieStore = await cookies();
 
   try {
     const formData = await req.formData();
@@ -83,8 +82,8 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
 // DELETE /api/stories/[storyId]
 export async function DELETE(req: NextRequest, { params }: RouteParams) {
-  const { storyId } = params;
-  const cookieStore = cookies();
+  const { storyId } = await params;
+  const cookieStore = await cookies();
 
   try {
     const res = await api.delete(`/stories/${storyId}`, {
