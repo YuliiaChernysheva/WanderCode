@@ -5,30 +5,43 @@ import css from './page.module.css';
 import Container from '@/components/Container/Container';
 import { TravellersInfo } from '@/components/TravellersInfo/TravellersInfo';
 import MessageNoStories from '@/components/MessageNoStories/MessageNoStories';
-// import TravellersStories from '@/components/TravellersStories/TravellersStories';
+// ✅ ВЫПРАЎЛЕННЕ ESLint: Выдалены невыкарыстоўваны імпарт TravellersStoriesProps
+import TravellersStories from '@/components/TravellersStories/TravellersStories';
 import { fetchAllStoriesServer } from '@/lib/api/serverApi';
 
-interface TravellerPageProps {
-  params: Promise<{ travellerId: string }>;
-}
-
-export default async function TravellerProfilePage({
-  params,
-}: TravellerPageProps) {
-  const { travellerId } = await params;
+// Use unknown for props and await params to satisfy Next.js runtime requirement
+export default async function TravellerProfilePage(props: unknown) {
+  // Await params — works whether params is a Promise or a plain object
+  const params = await (props as { params?: { travellerId?: string } })?.params;
+  const travellerId = params?.travellerId;
 
   if (!travellerId) {
-    notFound();
+    return notFound();
   }
 
   const filter = travellerId;
   const traveller = await getTravellerById(travellerId);
   const stories = await fetchAllStoriesServer({ filter });
-  const isStories = stories && stories.data && stories.data.totalItems > 0;
-  console.log('stories', stories);
+  const safeStories =
+    stories && stories.data
+      ? stories
+      : {
+          data: {
+            data: [], // Выкарыстоўваем 'data' замест 'items' для масіва гісторый
+            totalItems: 0,
+            totalPages: 1,
+            currentPage: 1,
+            hasNextPage: false,
+            page: 1,
+            perPage: 9,
+            hasPreviousPage: false,
+          },
+        };
+  const isStories = safeStories.data.totalItems > 0;
+  console.log('stories', safeStories);
 
   if (!traveller) {
-    notFound();
+    return notFound();
   }
 
   return (
@@ -37,7 +50,7 @@ export default async function TravellerProfilePage({
         <TravellersInfo traveller={traveller} />
         <h2 className={css.title}>Історії Мандрівника</h2>
         {isStories ? (
-          <div>Є історії</div> // замінити на TravellersStories
+          <TravellersStories initialStories={safeStories} filter={filter} />
         ) : (
           <MessageNoStories
             text={'Цей користувач ще не публікував історій'}
