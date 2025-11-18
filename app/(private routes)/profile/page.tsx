@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { notFound } from 'next/navigation';
 import Container from '@/components/Container/Container';
 import css from './ProfilePage.module.css';
