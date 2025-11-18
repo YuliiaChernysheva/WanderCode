@@ -60,21 +60,22 @@ export function StoryDetailsClient({ storyId }: Props) {
     <div className={css.container}>
       <h2 className={css.title}>{story.title}</h2>
       <div className={css.infoBlock}>
-        <p className={css.author}>
-          <span className={css.label}>Автор статті:</span>
-          <span className={css.value}>{story.owner?.name || '–'}</span>
-        </p>
-        <p className={css.date}>
-          <span className={css.label}>Опубліковано:</span>
-          <span className={css.value}>
-            {new Date(story.date).toLocaleDateString()}
-          </span>
-        </p>
+        <div className={css.leftBlock}>
+          <p className={css.data}>
+            <span className={css.label}>Автор статті:</span>
+            <span className={css.value}>{story.owner?.name || '–'}</span>
+          </p>
+          <p className={css.data}>
+            <span className={css.label}>Опубліковано:</span>
+            <span className={css.value}>
+              {new Date(story.date).toLocaleDateString()}
+            </span>
+          </p>
+        </div>
         <p className={css.country}>
           <span className={css.value}>{story.category?.title || '–'}</span>
         </p>
       </div>
-
       <img src={story.img} alt={story.title} className={css.image} />
 
       <div className={css.articleBlock}>
@@ -94,6 +95,7 @@ export function StoryDetailsClient({ storyId }: Props) {
           </button>
         </div>
       </div>
+      <p className={css.stories}>Популярні історії</p>
     </div>
   );
 }

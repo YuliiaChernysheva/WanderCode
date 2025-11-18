@@ -8,6 +8,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query';
 import PopularSection from '@/components/PopularSection/PopularSection';
+import styles from './page.module.css';
 
 type Props = {
   params: { storyId: string };
@@ -27,12 +28,18 @@ export default async function StoryPage({ params }: Props) {
   });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {/* Деталі історії */}
-      <StoryDetailsClient storyId={storyId} />
+    <main className={styles.page}>
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <HydrationBoundary state={dehydrate(queryClient)}>
+            {/* Деталі історії */}
+            <StoryDetailsClient storyId={storyId} />
 
-      {/* Блок популярних статей */}
-      <PopularSection />
-    </HydrationBoundary>
+            {/* Блок популярних статей */}
+            <PopularSection />
+          </HydrationBoundary>
+        </div>
+      </section>
+    </main>
   );
 }
