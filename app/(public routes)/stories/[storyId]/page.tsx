@@ -8,8 +8,7 @@ import {
 } from '@tanstack/react-query';
 import { StoryDetailsClient } from './StoryDetailsClient';
 import PopularSection from '@/components/PopularSection/PopularSection';
-import { Metadata } from 'next';
-import { DetailedStory } from '@/types/story';
+import styles from './page.module.css';
 
 interface PageProps {
   params: Promise<{ storyId: string }>;
@@ -83,9 +82,18 @@ export default async function StoryPage({ params }: PageProps) {
   }
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <StoryDetailsClient storyId={storyId} />
-      <PopularSection />
-    </HydrationBoundary>
+    <main className={styles.page}>
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <HydrationBoundary state={dehydrate(queryClient)}>
+            {/* Деталі історії */}
+            <StoryDetailsClient storyId={storyId} />
+
+            {/* Блок популярних статей */}
+            <PopularSection />
+          </HydrationBoundary>
+        </div>
+      </section>
+    </main>
   );
 }
