@@ -49,6 +49,9 @@ export default async function TravellerProfilePage({ params }: Props) {
 
   const filter = travellerId;
   const traveller = await getTravellerById(travellerId);
+  if (!traveller) {
+    return notFound();
+  }
   const stories = await fetchAllStoriesServer({ filter });
   const safeStories =
     stories && stories.data
