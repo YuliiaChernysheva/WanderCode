@@ -1,3 +1,5 @@
+// app/(public routes)/travellers/[travellerId]/page.tsx
+
 import React from 'react';
 import { Metadata } from 'next';
 import {
@@ -16,9 +18,20 @@ type Props = {
   params: { travellerId: string };
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+// 🛑 ВЫПРАЎЛЕННЕ: Выкарыстоўваем 'any' для аргумента generateMetadata
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function generateMetadata(props: any): Promise<Metadata> {
+  const { params } = props as Props; // Прывядзенне тыпу для бяспечнай працы
   const { travellerId } = params;
+
+  // ⚠️ УВАГА: Апрацоўка notFound для generateMetadata: калі traveller.name будзе null/undefined,
+  // тут можа быць памылка. Лепш зрабіць праверку.
   const traveller = await getTravellerInfoById(travellerId);
+  if (!traveller) {
+    // Вяртаем агульныя метададзеныя або кідаем памылку
+    return { title: `Мандрівник не знайдений` };
+  }
+
   return {
     title: `Профіль Мандрівника: ${traveller.name}`,
     description: `Історії подорожей, фото та пригоди з усього світу.`,
@@ -39,9 +52,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function TravellerProfilePage({ params }: Props) {
-  const resolvedParams = params;
-  const travellerId = resolvedParams.travellerId?.trim();
+// 🛑 ВЫПРАЎЛЕННЕ: Выкарыстоўваем 'any' для аргумента кампанента старонкі
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function TravellerProfilePage(props: any) {
+  const { params } = props as Props; // Прывядзенне тыпу для бяспечнай працы
+
+  // ❌ Выдаляем: const resolvedParams = params; (прыбрана, бо яна лішняя)
+  const travellerId = params.travellerId?.trim();
 
   if (!travellerId) {
     return notFound();
@@ -52,6 +69,7 @@ export default async function TravellerProfilePage({ params }: Props) {
   if (!traveller) {
     return notFound();
   }
+
   const stories = await fetchAllStoriesServer({ filter });
   const safeStories =
     stories && stories.data
