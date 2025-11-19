@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchStoryById, saveStory } from '@/lib/api/clientApi';
-import css from './routesStory.client.module.css';
+import css from './StoryDetailsClient.client.module.css';
 import { DetailedStory } from '@/types/story';
 import Loader from '@/components/Loader/Loader';
 import { toast } from 'react-toastify';
