@@ -66,48 +66,50 @@ export default async function ProfilePage({ params }: PageProps) {
 
   return (
     <Container>
-      <TravellerInfo traveller={user} />
-      <div>
-        <ul className={css.btnContainer}>
-          <li className={pageType === 'saved' ? css.active : ''}>
-            <Link href="/profile/saved" aria-disabled={pageType === 'saved'}>
-              Збережені історії
-            </Link>
-          </li>
-          <li className={pageType === 'own' ? css.active : ''}>
-            <Link href="/profile/own" aria-disabled={pageType === 'own'}>
-              Мої історії
-            </Link>
-          </li>
-        </ul>
+      <div className={css.profile}>
+        <TravellerInfo traveller={user} />
+        <div>
+          <ul className={css.btnContainer}>
+            <li className={pageType === 'saved' ? css.active : ''}>
+              <Link href="/profile/saved" aria-disabled={pageType === 'saved'}>
+                Збережені історії
+              </Link>
+            </li>
+            <li className={pageType === 'own' ? css.active : ''}>
+              <Link href="/profile/own" aria-disabled={pageType === 'own'}>
+                Мої історії
+              </Link>
+            </li>
+          </ul>
+        </div>
+        {pageType === 'saved' ? (
+          <div>
+            {isMyStories ? (
+              <StoriesListWrapper initialStories={savedStories.stories} />
+            ) : (
+              <MessageNoStories
+                text={
+                  'У вас ще немає збережених історій, мершій збережіть вашу першу історію!'
+                }
+                buttonText={'До історій'}
+              />
+            )}
+          </div>
+        ) : (
+          <div>
+            {isStories ? (
+              <TravellersStories initialStories={ownStories} filter={filter} />
+            ) : (
+              <MessageNoStories
+                text={
+                  'Ви ще нічого не публікували, поділіться своєю першою історією!'
+                }
+                buttonText={'Опублікувати історію'}
+              />
+            )}
+          </div>
+        )}
       </div>
-      {pageType === 'saved' ? (
-        <div>
-          {isMyStories ? (
-            <StoriesListWrapper initialStories={savedStories.stories} />
-          ) : (
-            <MessageNoStories
-              text={
-                'У вас ще немає збережених історій, мершій збережіть вашу першу історію!'
-              }
-              buttonText={'До історій'}
-            />
-          )}
-        </div>
-      ) : (
-        <div>
-          {isStories ? (
-            <TravellersStories initialStories={ownStories} filter={filter} />
-          ) : (
-            <MessageNoStories
-              text={
-                'Ви ще нічого не публікували, поділіться своєю першою історією!'
-              }
-              buttonText={'Опублікувати історію'}
-            />
-          )}
-        </div>
-      )}
     </Container>
   );
 }

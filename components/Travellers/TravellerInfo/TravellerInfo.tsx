@@ -13,16 +13,14 @@ const TravellerInfo: React.FC<TravellerInfoProps> = ({ traveller }) => {
   return (
     <div className={styles.infoWrapper}>
       <div className={styles.avatarSection}>
-        {traveller.avatarUrl && (
-          <Image
-            src={traveller.avatarUrl || '/file.svg'}
-            alt={traveller.name}
-            width={199}
-            height={199}
-            className={styles.avatar}
-            priority={true}
-          />
-        )}
+        <Image
+          src={traveller.avatarUrl || '/default-avatar.png'}
+          alt={traveller.name}
+          width={199}
+          height={199}
+          className={styles.avatar}
+          priority={true}
+        />
       </div>
       <div className={styles.textInfo}>
         <h1 className={styles.title}>{traveller.name}</h1>

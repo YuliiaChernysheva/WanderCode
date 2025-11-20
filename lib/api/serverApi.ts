@@ -237,22 +237,7 @@ export async function fetchOwnStories(): Promise<OwnStoriesResponse> {
 
   const payload = res.data?.data;
 
-  const storiesArray: Story[] = Array.isArray(payload?.data)
-    ? payload.data
-    : [];
-
-  const normalizedStories: StoryWithStatus[] = storiesArray.map((story) => ({
-    ...story,
-    isFavorite: story.isFavorite ?? false,
-  }));
-
   return {
-    stories: normalizedStories,
-    page: res.data.data.page,
-    perPage: res.data.data.perPage,
-    totalItems: res.data.data.totalItems,
-    totalPages: res.data.data.totalPages,
-    hasNextPage: res.data.data.hasNextPage,
-    hasPreviousPage: res.data.data.hasPreviousPage,
+    ...payload,
   };
 }
