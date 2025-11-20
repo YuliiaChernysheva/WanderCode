@@ -41,6 +41,7 @@
 .logoutButton {
   border: none;
   background-color: transparent;
+  cursor: pointer;
 }
 .publishBtn,
 .loginBtn,
