@@ -135,7 +135,7 @@ export async function fetchAllStoriesServer({
 const PUBLIC_ROUTES = ['/', '/stories', '/travellers'];
 
 export const getMeServer = async (
-  pathname: string
+  pathname?: string
 ): Promise<UserResponse | null> => {
   if (!pathname) {
     return null;

@@ -40,10 +40,11 @@ export default async function PopularSection({
   } catch (error) {
     console.error('SERVER ERROR: Failed to prefetch stories.', error);
   }
+  // 🛑 FIX APPLIED HERE: Wrapped getMeServer in an anonymous function.
   try {
     await queryClient.prefetchQuery({
       queryKey: ['user'],
-      queryFn: getMeServer,
+      queryFn: () => getMeServer(), // This matches the required QueryFn signature
     });
   } catch (error) {
     console.error(
@@ -68,12 +69,14 @@ export default async function PopularSection({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+           {' '}
       <PopularSectionClient
         initialData={initialData}
         initialUser={initialUserData?.selectedStories}
         sortField={sortField}
         sortOrder={sortOrder}
       />
+         {' '}
     </HydrationBoundary>
   );
 }
