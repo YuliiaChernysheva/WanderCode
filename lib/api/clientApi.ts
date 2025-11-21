@@ -221,7 +221,7 @@ export const saveStory = async (id: string) => {
 
 export const fetchAllCategories = async (): Promise<Category[]> => {
   try {
-    const response = await api.get('/api/stories/categories');
+    const response = await api.get('/stories/categories');
 
     const result = response;
     return result.data || result;
