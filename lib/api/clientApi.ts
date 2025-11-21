@@ -223,8 +223,9 @@ export const fetchAllCategories = async (): Promise<Category[]> => {
   try {
     const response = await api.get('/stories/categories');
 
-    const result = response;
-    return result.data || result;
+    return Array.isArray(response.data)
+      ? response.data
+      : (response.data?.data ?? []);
   } catch (error) {
     console.error('Error in fetchAllCategories:', error);
     throw error;

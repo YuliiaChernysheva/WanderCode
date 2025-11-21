@@ -40,11 +40,10 @@ export default async function PopularSection({
   } catch (error) {
     console.error('SERVER ERROR: Failed to prefetch stories.', error);
   }
-  // 🛑 FIX APPLIED HERE: Wrapped getMeServer in an anonymous function.
   try {
     await queryClient.prefetchQuery({
       queryKey: ['user'],
-      queryFn: () => getMeServer(), // This matches the required QueryFn signature
+      queryFn: () => getMeServer(),
     });
   } catch (error) {
     console.error(

@@ -18,6 +18,7 @@ import { useAuthStore } from '@/lib/store/authStore';
 import { showErrorToast } from '@/components/ShowErrorToast/ShowErrorToast';
 import styles from './TravellersStoriesItem.module.css';
 import { User } from '@/types/user';
+import { log } from 'console';
 
 // 🛑 ВЫЗНАЧЭННЕ ТЫПАЎ, ЯКІЯ БУДУЦЬ ВЫКАРЫСТАНЫЯ
 export type ProfileProps = {
@@ -25,10 +26,6 @@ export type ProfileProps = {
   name?: string; // string | undefined
   description?: string;
 };
-
-// interface Props { // ВЫДАЛЕНА, каб пазбегнуць памылкі ESLint, бо не выкарыстоўваецца тут
-// 	traveller: ProfileProps;
-// }
 
 interface Category {
   _id: string;
@@ -62,7 +59,6 @@ const AuthorDisplay = ({ name, avatarUrl }: ProfileProps) => (
     <div className={styles.authorInfoWrapper}>
       {/* Паказваем імя або "Невядомы аўтар" */}
       <span className={styles.authorName}>{name || 'Невядомы аўтар'}</span>
-      {/* Астатнія элементы ўнутры authorInfoWrapper (дата і закладкі) будуць дададзены ніжэй */}
     </div>
   </>
 );
@@ -83,11 +79,8 @@ const TravellersStoriesItem = ({
   const publishedAt = story.date;
   const initialBookmarksCount = story.favoriteCount ?? 0;
   const initiallySaved = story.isFavorite;
-
-  // Выкарыстоўваем ownerId як ID аўтара
   const authorId = story.ownerId._id;
 
-  // 1. АТРАМАННЕ ДАДЗЕНЫХ АЎТАРА (useQuery)
   const {
     data: authorData,
     isLoading: isAuthorLoading,
@@ -100,7 +93,6 @@ const TravellersStoriesItem = ({
     staleTime: Infinity,
   });
 
-  // АТРАМАННЕ ДАДЗЕНЫХ КАТЭГОРЫЙ
   const { data: categoriesData } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: fetchAllCategories,
@@ -108,22 +100,21 @@ const TravellersStoriesItem = ({
     gcTime: Infinity,
   });
 
-  // 2. ВЫЛІЧЭННЕ ПАЛЕЙ АЎТАРА (для перадачы ў AuthorDisplay)
   const finalAuthorName = isAuthorLoading
     ? 'Загрузка автора...'
     : isAuthorError
-      ? 'Памылка аўтара'
-      : authorData?.name; // string | undefined
+      ? 'Помилка автора'
+      : authorData?.name;
 
-  const finalAuthorAvatar = authorData?.avatarUrl; // string | undefined
+  const finalAuthorAvatar = authorData?.avatarUrl;
 
   const categoryName = useMemo(() => {
     if (!categoriesData) return '–';
+    const categoryObj = categoriesData.find(
+      (cat) => cat._id === categoryId._id
+    );
 
-    const id = categoryId?._id ?? ''; // categoryId може бути undefined
-    const categoryObj = categoriesData.find((cat) => cat._id === id);
-
-    return categoryObj?.name ?? id ?? '–'; // завжди string
+    return categoryObj?.name;
   }, [categoriesData, categoryId]);
 
   const [saved, setSaved] = useState<boolean>(initiallySaved);
@@ -139,7 +130,6 @@ const TravellersStoriesItem = ({
     });
   }, [publishedAt]);
 
-  // Дыягностыка памылак аўтара
   useEffect(() => {
     if (isAuthorError) {
       console.error('Error fetching author data:', authorError);
