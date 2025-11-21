@@ -244,3 +244,4 @@ export async function fetchOwnStories(): Promise<OwnStoriesResponse> {
     hasPreviousPage: payload?.hasPreviousPage || false, // Бяспечны доступ
   };
 }
+

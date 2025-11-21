@@ -20,6 +20,11 @@
   line-height: 150%;
   color: var(--color-white);
 }
+.createStory:hover {
+  background: var(--color-royal-blue-lighter);
+  border: 1px solid var(--color-royal-blue);
+  color: var(--color-scheme-2-text);
+}
 .container {
   max-width: 1200px;
   margin: 0 auto;
