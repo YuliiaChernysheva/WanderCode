@@ -60,8 +60,6 @@ export default async function ProfilePage({ params }: PageProps) {
 
   const savedStories = await fetchOwnStories();
 
-  console.log('saved stories', savedStories.stories);
-
   const isMyStories = savedStories.totalItems > 0;
 
   return (

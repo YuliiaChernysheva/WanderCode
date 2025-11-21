@@ -13,8 +13,6 @@ interface Props {
 export default function StoriesListWrapper({ initialStories }: Props) {
   const [stories, setStories] = useState(initialStories);
 
-  console.log('client', initialStories, stories);
-
   const handleToggleFavorite = (storyId: string, isAdding: boolean) => {
     setStories((prev) =>
       prev.map((story) =>

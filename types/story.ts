@@ -4,8 +4,12 @@ export interface Story {
   img: string;
   title: string;
   article: string;
-  category: string;
-  ownerId: string;
+  category: Category;
+  ownerId: {
+    _id: string;
+    name: string;
+    avatarUrl: string;
+  };
   date: string;
   favoriteCount: number;
   shortDesc?: string;
@@ -53,7 +57,7 @@ export interface DetailedStory {
   article: string;
   category: {
     _id: string;
-    title: string;
+    name: string;
   };
   owner: {
     _id: string;

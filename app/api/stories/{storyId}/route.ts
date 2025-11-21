@@ -24,7 +24,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   }
 
   try {
-    const res = await api.get(`/stories/${storyId}`, {});
+    const res = await api.get(`/stories/${storyId}`);
 
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {

@@ -69,14 +69,12 @@ export default async function PopularSection({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-           {' '}
       <PopularSectionClient
         initialData={initialData}
         initialUser={initialUserData?.selectedStories}
         sortField={sortField}
         sortOrder={sortOrder}
       />
-         {' '}
     </HydrationBoundary>
   );
 }

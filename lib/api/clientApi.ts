@@ -221,14 +221,13 @@ export const saveStory = async (id: string) => {
 
 export const fetchAllCategories = async (): Promise<Category[]> => {
   try {
-    // 🛑 ВЫПРАЎЛЕННЕ: Выкарыстоўваем правільны маршрут для Next.js API
     const response = await fetch('/api/stories/categories');
 
     if (!response.ok) {
       let errorData;
       try {
         errorData = await response.json();
-      } catch (_) {
+      } catch {
         throw new Error(`Памылка атрымання катэгорый: ${response.status}`);
       }
       throw new Error(

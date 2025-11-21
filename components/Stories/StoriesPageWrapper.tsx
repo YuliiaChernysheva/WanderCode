@@ -143,7 +143,7 @@ const StoriesPageWrapper: React.FC = () => {
   if (isLoading && !isFetchingNextPage) {
     return (
       <div className={styles.storiesLoader}>
-                <Loader />       {' '}
+        <Loader />
       </div>
     );
   }
@@ -153,39 +153,32 @@ const StoriesPageWrapper: React.FC = () => {
   if (!allStories.length && !hasNextPage) {
     return (
       <div className={styles.storiesEmpty}>
-               {' '}
-        <h2 className={styles.storiesEmpty__title}>{noStoriesMessage}</h2>     
-         {' '}
+        <h2 className={styles.storiesEmpty__title}>{noStoriesMessage}</h2>
+
         <p className={styles.storiesEmpty__text}>
-                    Спробуйте пізніше або змініть фільтри.        {' '}
+          Спробуйте пізніше або змініть фільтри.
         </p>
-             {' '}
       </div>
     );
   } // 3. Main Rendering
 
   return (
     <section className={styles.storiesSection}>
-           {' '}
       <StoriesList stories={allStories} onToggleSuccess={handleToggleSuccess} />
-            {/* Check for next page based on the API response */}     {' '}
+
       {hasNextPage && (
         <div className={styles.loadMoreWrap}>
-                   {' '}
           <button
             type="button"
             className={styles.loadMoreBtn}
             onClick={handleLoadMore}
             disabled={isFetchingNextPage}
           >
-                       {' '}
-            {isFetchingNextPage ? 'Завантаження...' : 'Переглянути ще'}       
-             {' '}
+            {isFetchingNextPage ? 'Завантаження...' : 'Переглянути ще'}
           </button>
-                 {' '}
         </div>
       )}
-            {isFetchingNextPage && <Loader />}   {' '}
+      {isFetchingNextPage && <Loader />}
     </section>
   );
 };

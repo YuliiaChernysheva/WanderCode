@@ -18,11 +18,9 @@ interface PageProps {
   params: { storyId: string };
 }
 
-// 1. ПРАВІЛЬНАЯ ТЫПІЗАЦЫЯ (без 'any')
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  // 2. ЗАЎСЁДЫ ВЫКАРЫСТОЎВАЙЦЕ AWAIT ДЛЯ ПАРАМЕТРАЎ, КАЛІ ПАПЯРЭДЖВАЕ NEXT.JS
   const awaitedParams = await params;
   const storyId = awaitedParams.storyId?.trim();
 
@@ -70,9 +68,7 @@ export async function generateMetadata({
   };
 }
 
-// 3. ПРАВІЛЬНАЯ ТЫПІЗАЦЫЯ І AWAIT У КАМПАНЕНЦЕ
 export default async function StoryPage({ params }: PageProps) {
-  // 4. ЗАЎСЁДЫ ВЫКАРЫСТОЎВАЙЦЕ AWAIT ДЛЯ ПАРАМЕТРАЎ
   const awaitedParams = await params;
   const storyId = awaitedParams.storyId?.trim();
 
