@@ -215,8 +215,8 @@ export async function fetchStoryByIdServer(id: string): Promise<DetailedStory> {
   }
 }
 
-interface OwnStoriesResponse {
-  stories: StoriesResponse;
+export interface OwnStoriesResponse {
+  stories: Story[];
   page: number;
   perPage: number;
   totalItems: number;
