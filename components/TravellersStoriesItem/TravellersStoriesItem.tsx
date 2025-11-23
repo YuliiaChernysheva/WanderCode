@@ -22,10 +22,12 @@ export type ProfileProps = {
 
 type TravellersStoriesItemProps = {
   story: Story;
+  onToggleSuccess: (storyId: string, isAdding: boolean) => void;
 };
 
 export default function TravellersStoriesItem({
   story,
+  onToggleSuccess,
 }: TravellersStoriesItemProps) {
   const { isAuthenticated, user } = useAuthStore();
 
@@ -36,7 +38,6 @@ export default function TravellersStoriesItem({
   });
 
   const [saved, setSaved] = useState(false);
-  // перевірка користувача
   useEffect(() => {
     if (isAuthenticated && user) {
       setSaved(user.selectedStories?.includes(story._id) ?? false);
@@ -58,7 +59,12 @@ export default function TravellersStoriesItem({
       }
     },
     onSuccess: () => {
-      setSaved((prev) => !prev);
+      setSaved((prev) => {
+        const newSavedState = !prev;
+
+        onToggleSuccess(story._id, newSavedState);
+        return newSavedState;
+      });
     },
     onError: () => {
       showErrorToast('Щось пішло не так');
@@ -89,7 +95,6 @@ export default function TravellersStoriesItem({
           </Link>
         </header>
         <p className={styles.description}>{story.article}</p>
-
         <div className={styles.authorMetaBlock}>
           <Image
             src={story.ownerId.avatarUrl || '/default-avatar.png'}
@@ -116,12 +121,10 @@ export default function TravellersStoriesItem({
             </div>
           </div>
         </div>
-
         <div className={styles.actions}>
           <Link href={`/stories/${story._id}`} className={styles.viewButton}>
             Переглянути статтю
           </Link>
-
           <button
             className={saved ? styles.bookmarkBtnSave : styles.bookmarkBtn}
             onClick={() => {
