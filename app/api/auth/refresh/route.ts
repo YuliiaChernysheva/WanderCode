@@ -53,3 +53,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 }
+export async function POST(request: NextRequest) {
+  // Паколькі логіка абнаўлення токена ў вас аднолькавая,
+  // і вы проста чытаеце кукі, можна выкарыстоўваць GET-логіку.
+  return GET(request);
+}
