@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🌍 Podorozhnyk — Travel Stories Platform
 
-## Getting Started
+Podorozhnyk is a modern web platform created for travelers and people who love exploring the world.
+The app allows users to read authentic travel stories from other travellers, save favorite articles, and publish their own experiences.
+This is a team project developed during our full-stack course.
 
-First, run the development server:
+✨ Project Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Travel stories feed
+Users can browse and read stories shared by other travellers.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Save stories to favorites
+Each user can add stories to their saved list to return to them later.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create and publish your own stories
+Authenticated users can write and publish their own travel articles about places they visit.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Travellers community
+Users can explore a list of travellers and open their profiles.
 
-## Learn More
+Clean and structured UI
+Stories are displayed as cards with images, category badges, author and date info.
 
-To learn more about Next.js, take a look at the following resources:
+Fully responsive design
+The interface is adapted for desktop, tablet, and mobile (from 320px).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+⚙️ Tech Stack
+Front-end:
+Next.js, React, TypeScript, Axios, React Query (TanStack Query), Zustand, CSS Modules, Next/Image.
+Back-end / API:
+Node.js, Express, MongoDB / Mongoose, JWT authentication (access + refresh tokens), Swagger.
+Tools:
+VSCode, Git/GitHub, Figma, ESLint + Prettier.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+👥Team Dev WanderCode team: 
+Team Lead+Developer: Viktor Skalei
+Scrum Master+Developer: Anastasiia Lahotska
+Developers: Vadzim Simanau, Sysoiev Hennadii, Beniamin Mishkur, Serhii Shevchenko, Yuliia Chernysheva, Yevheniia Voiuieva, Yana Rudometova, Oleksii Tepliak
