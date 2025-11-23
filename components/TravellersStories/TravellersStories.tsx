@@ -160,15 +160,9 @@ const TravellersStories = ({
     fetchNextPage();
   };
 
-  const handleToggleSuccess = (storyId: string, isAdding: boolean) => {
-    console.log(
-      `Закладка для ${storyId}: ${isAdding ? 'дададзена' : 'выдалена'}`
-    );
-  };
-
   return (
     <section className={styles.stories}>
-      <StoriesList stories={allStories} onToggleSuccess={handleToggleSuccess} />
+      <StoriesList stories={allStories} />
       {hasNextPage && (
         <div className={styles.loadMoreWrap}>
           <button

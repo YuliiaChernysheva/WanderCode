@@ -1,14 +1,14 @@
 // components/PopularSection/PopularSection.client.tsx
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { fetchAllStoriesClient, getMe } from '@/lib/api/clientApi';
 import Link from 'next/link';
 
 import css from './PopularSection.module.css';
 import { StoriesResponse, Story } from '@/types/story';
 import TravellersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 type PopularClientProps = {
   initialData: StoriesResponse;
@@ -34,7 +34,7 @@ export default function PopularSectionClient({
   sortField,
   sortOrder,
 }: PopularClientProps) {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const [stories] = useState<Story[]>(initialData.data.data ?? []);
   const [hasNextPage] = useState(initialData.data.hasNextPage ?? false);
@@ -61,29 +61,29 @@ export default function PopularSectionClient({
 
   const selectedStories = userData?.selectedStories ?? [];
 
-  const updateSelectedStories = useCallback(
-    (storyId: string, isAdding: boolean) => {
-      queryClient.setQueryData<UserDataResponse | undefined>(
-        ['user'],
-        (prevData) => {
-          if (!prevData) return prevData;
+  // const updateSelectedStories = useCallback(
+  //   (storyId: string, isAdding: boolean) => {
+  //     queryClient.setQueryData<UserDataResponse | undefined>(
+  //       ['user'],
+  //       (prevData) => {
+  //         if (!prevData) return prevData;
 
-          let newSelectedStories;
-          if (isAdding) {
-            newSelectedStories = prevData.selectedStories.includes(storyId)
-              ? prevData.selectedStories
-              : [...prevData.selectedStories, storyId];
-          } else {
-            newSelectedStories = prevData.selectedStories.filter(
-              (id) => id !== storyId
-            );
-          }
-          return { ...prevData, selectedStories: newSelectedStories };
-        }
-      );
-    },
-    [queryClient]
-  );
+  //         let newSelectedStories;
+  //         if (isAdding) {
+  //           newSelectedStories = prevData.selectedStories.includes(storyId)
+  //             ? prevData.selectedStories
+  //             : [...prevData.selectedStories, storyId];
+  //         } else {
+  //           newSelectedStories = prevData.selectedStories.filter(
+  //             (id) => id !== storyId
+  //           );
+  //         }
+  //         return { ...prevData, selectedStories: newSelectedStories };
+  //       }
+  //     );
+  //   },
+  //   [queryClient]
+  // );
 
   return (
     <div className={css.section}>
@@ -97,10 +97,7 @@ export default function PopularSectionClient({
 
           return (
             <li key={story._id} className={css.listItem}>
-              <TravellersStoriesItem
-                story={storyWithStatus}
-                onToggleSuccess={updateSelectedStories}
-              />
+              <TravellersStoriesItem story={storyWithStatus} />
             </li>
           );
         })}

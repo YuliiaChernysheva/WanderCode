@@ -171,7 +171,6 @@ function StoriesList({ categories }: { categories: CategoryResponse }) {
       {data && (
         <ul className={styles.storyList}>
           {data.pages.flatMap((page) => {
-            console.log('Сторіз з API:', page.data.data);
             return page.data.data.map((story) => (
               <li className={styles.storyItem} key={story._id}>
                 <TravellersStoriesItem story={story} />

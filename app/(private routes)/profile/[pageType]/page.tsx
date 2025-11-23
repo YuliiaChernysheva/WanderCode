@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic';
 import Container from '@/components/Container/Container';
 import MessageNoStories from '@/components/MessageNoStories/MessageNoStories';
-// import StoriesList from '@/components/StoriesList/StoriesList';
 import TravellerInfo from '@/components/Travellers/TravellerInfo/TravellerInfo';
 import TravellersStories from '@/components/TravellersStories/TravellersStories';
 import css from './ProfilePage.module.css';
@@ -10,13 +9,14 @@ import {
   fetchAllStoriesServer,
   fetchOwnStories,
   getMeServer,
+  OwnStoriesResponse,
 } from '@/lib/api/serverApi';
-
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import StoriesListWrapper from './ProfilePage.client';
 import { User } from '@/types/user';
 import { toast } from 'react-toastify';
+import TravellersStoriesItem from '@/components/TravellersStoriesItem/TravellersStoriesItem';
+import { Story } from '@/types/story';
 
 type PageProps = {
   params: Promise<{ pageType: string }>;
@@ -58,7 +58,7 @@ export default async function ProfilePage({ params }: PageProps) {
         };
   const isStories = ownStories.data.totalItems > 0;
 
-  const savedStories = await fetchOwnStories();
+  const savedStories: OwnStoriesResponse = await fetchOwnStories();
 
   const isMyStories = savedStories.totalItems > 0;
 
@@ -83,7 +83,9 @@ export default async function ProfilePage({ params }: PageProps) {
         {pageType === 'saved' ? (
           <div>
             {isMyStories ? (
-              <StoriesListWrapper initialStories={savedStories.stories} />
+              savedStories.stories.map((story: Story) => (
+                <TravellersStoriesItem key={story._id} story={story} />
+              ))
             ) : (
               <MessageNoStories
                 text={

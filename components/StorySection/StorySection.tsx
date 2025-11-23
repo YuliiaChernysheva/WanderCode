@@ -29,12 +29,6 @@ interface StorySectionProps {
   travellerId?: string;
 }
 
-const handleToggleSuccess = (storyId: string, isAdding: boolean) => {
-  console.log(
-    `Story ${storyId} Toggled: ${isAdding ? 'Added' : 'Removed'} (Placeholder)`
-  );
-};
-
 const StorySection = ({
   queryKey,
   title,
@@ -46,10 +40,6 @@ const StorySection = ({
   sortOrder = 'desc',
   travellerId,
 }: StorySectionProps) => {
-  // const ITEMS_PER_PAGE = 9; // ✅ ВЫДАЛЕНА: Гэтая зменная больш не патрэбна
-  // const initialPagesToFetch = Math.ceil(limit / ITEMS_PER_PAGE) || 1; // 🛑 ВЫДАЛЕНА: Невыкарыстоўваемая зменная
-
-  // 1. Выкарыстанне useInfiniteQuery
   const {
     data,
     fetchNextPage,
@@ -108,11 +98,7 @@ const StorySection = ({
         <div className={styles.storiesGrid}>
                    {' '}
           {displayedStories.map((story) => (
-            <TravellersStoriesItem
-              key={story._id}
-              story={story}
-              onToggleSuccess={handleToggleSuccess}
-            />
+            <TravellersStoriesItem key={story._id} story={story} />
           ))}
                  {' '}
         </div>
