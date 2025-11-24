@@ -13,6 +13,7 @@ import {
 import { StoryDetailsClient } from './StoryDetailsClient';
 import PopularSection from '@/components/PopularSection/PopularSection';
 import styles from './page.module.css';
+import { Container } from '@/components/Container/Container';
 
 interface PageProps {
   params: Promise<{ storyId: string }>;
@@ -108,15 +109,17 @@ export default async function StoryPage({ params }: PageProps) {
   }
 
   return (
-    <main className={styles.page}>
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <HydrationBoundary state={dehydrate(queryClient)}>
-            <StoryDetailsClient storyId={storyId} />
-            <PopularSection />
-          </HydrationBoundary>
-        </div>
-      </section>
-    </main>
+    <Container>
+      <div className={styles.page}>
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <HydrationBoundary state={dehydrate(queryClient)}>
+              <StoryDetailsClient storyId={storyId} />
+              <PopularSection />
+            </HydrationBoundary>
+          </div>
+        </section>
+      </div>
+    </Container>
   );
 }

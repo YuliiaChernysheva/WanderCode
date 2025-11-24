@@ -11,7 +11,6 @@ import MessageNoStories from '@/components/MessageNoStories/MessageNoStories';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { getCategories } from '@/lib/api/categories';
-import Container from '@/components/Container/Container';
 
 interface PageParams {
   storyId: string;
@@ -136,68 +135,64 @@ export function StoryDetailsClient({ storyId }: PageParams) {
   const authorName = owner.name ?? '–';
 
   return (
-    <Container>
-      <div className={css.container}>
-        <h2 className={css.title}>{story.title}</h2>
+    <div className={css.container}>
+      <h2 className={css.title}>{story.title}</h2>
 
-        <div className={css.infoBlock}>
-          <div className={css.leftBlock}>
-            <div className={css.authorRow}>
-              <div className={css.authorMeta}>
-                <p className={css.data}>
-                  <span className={css.label}>Автор статті:</span>
-                  <span className={css.value}>{authorName}</span>
-                </p>
-                <p className={css.data}>
-                  <span className={css.label}>Опубліковано:</span>
-                  <span className={css.value}>
-                    {story.date
-                      ? new Date(story.date).toLocaleDateString()
-                      : '–'}
-                  </span>
-                </p>
-              </div>
+      <div className={css.infoBlock}>
+        <div className={css.leftBlock}>
+          <div className={css.authorRow}>
+            <div className={css.authorMeta}>
+              <p className={css.data}>
+                <span className={css.label}>Автор статті:</span>
+                <span className={css.value}>{authorName}</span>
+              </p>
+              <p className={css.data}>
+                <span className={css.label}>Опубліковано:</span>
+                <span className={css.value}>
+                  {story.date ? new Date(story.date).toLocaleDateString() : '–'}
+                </span>
+              </p>
             </div>
           </div>
-          <p className={css.country}>
-            <span className={css.value}>{categoryName}</span>
-          </p>
         </div>
-
-        <div
-          className={css.imageWrapper}
-          style={{ position: 'relative', width: '100%', aspectRatio: '16/9' }}
-        >
-          <Image
-            src={imgSrc}
-            alt={story.title ?? 'story image'}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            style={{ objectFit: 'cover' }}
-            onError={() => setImgSrc('/file.svg')}
-            unoptimized
-          />
-        </div>
-
-        <div className={css.articleBlock}>
-          <p className={css.article}>{story.article}</p>
-
-          <div className={css.savedBlock}>
-            <h3 className={css.savedTitle}>Збережіть собі історію</h3>
-            <p className={css.savedText}>
-              Вона буде доступна у вашому профілі у розділі збережене
-            </p>
-            <button
-              className={css.saveButton}
-              onClick={() => mutation.mutate()}
-              disabled={mutation.isPending}
-            >
-              {mutation.isPending ? 'Зберігаємо...' : 'Зберегти'}
-            </button>
-          </div>
-        </div>
-        <p className={css.stories}>Популярні історії</p>
+        <p className={css.country}>
+          <span className={css.value}>{categoryName}</span>
+        </p>
       </div>
-    </Container>
+
+      <div
+        className={css.imageWrapper}
+        style={{ position: 'relative', width: '100%', aspectRatio: '16/9' }}
+      >
+        <Image
+          src={imgSrc}
+          alt={story.title ?? 'story image'}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          style={{ objectFit: 'cover' }}
+          onError={() => setImgSrc('/file.svg')}
+          unoptimized
+        />
+      </div>
+
+      <div className={css.articleBlock}>
+        <p className={css.article}>{story.article}</p>
+
+        <div className={css.savedBlock}>
+          <h3 className={css.savedTitle}>Збережіть собі історію</h3>
+          <p className={css.savedText}>
+            Вона буде доступна у вашому профілі у розділі збережене
+          </p>
+          <button
+            className={css.saveButton}
+            onClick={() => mutation.mutate()}
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? 'Зберігаємо...' : 'Зберегти'}
+          </button>
+        </div>
+      </div>
+      <p className={css.stories}>Популярні історії</p>
+    </div>
   );
 }

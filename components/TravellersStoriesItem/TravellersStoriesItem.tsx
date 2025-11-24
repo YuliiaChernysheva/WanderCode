@@ -22,7 +22,8 @@ export type ProfileProps = {
 
 type TravellersStoriesItemProps = {
   story: Story;
-  onToggleSuccess: (storyId: string, isAdding: boolean) => void;
+  // made optional so this component can be used in server-rendered lists
+  onToggleSuccess?: (storyId: string, isAdding: boolean) => void;
 };
 
 export default function TravellersStoriesItem({
@@ -61,8 +62,10 @@ export default function TravellersStoriesItem({
     onSuccess: () => {
       setSaved((prev) => {
         const newSavedState = !prev;
-
-        onToggleSuccess(story._id, newSavedState);
+        // Call the optional callback only if it's provided
+        if (typeof onToggleSuccess === 'function') {
+          onToggleSuccess(story._id, newSavedState);
+        }
         return newSavedState;
       });
     },

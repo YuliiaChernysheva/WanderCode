@@ -1,12 +1,14 @@
+//api/stories/%7BstoryId%7D/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { AxiosError, isAxiosError } from 'axios';
 
 import { api } from '../../api';
 
-// ✅ ВЫПРАЎЛЕНЫ ІНТЭРФЕЙС
+// Avoid `any` — use a safe record type for params promoted to a Promise.
+// Next's generated types expect a Promise, so make it Promise<Record<string, unknown>>
 interface RouteParams {
-  params: { storyId: string };
+  params: Promise<Record<string, unknown>>;
 }
 
 function logErrorResponse(error: AxiosError) {
@@ -17,8 +19,9 @@ function logErrorResponse(error: AxiosError) {
 // -----------------------------------------------------------
 // GET /api/stories/[storyId]
 // -----------------------------------------------------------
-export async function GET(req: NextRequest, { params }: RouteParams) {
-  const { storyId } = params;
+export async function GET(req: NextRequest, ctx: RouteParams) {
+  const rawParams = await ctx.params;
+  const storyId = String(rawParams?.storyId ?? '').trim();
   const cookieStore = cookies();
 
   if (!storyId) {
@@ -30,7 +33,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
   try {
     const res = await api.get(`/stories/${storyId}`, {
-      // 💡 Перадача кукі для падтрымання сесіі/аўтарызацыі
+      // pass cookies from the incoming request so backend can authenticate
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -58,12 +61,19 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 }
 
 // -----------------------------------------------------------
-// PATCH /api/stories/[storyId] (Патэнцыйнае абнаўленне/захаванне)
+// PATCH /api/stories/[storyId]
 // -----------------------------------------------------------
-export async function PATCH(req: NextRequest, { params }: RouteParams) {
-  // ✅ Выдалена 'await'
-  const { storyId } = params;
+export async function PATCH(req: NextRequest, ctx: RouteParams) {
+  const rawParams = await ctx.params;
+  const storyId = String(rawParams?.storyId ?? '').trim();
   const cookieStore = cookies();
+
+  if (!storyId) {
+    return NextResponse.json(
+      { message: 'Story ID is required' },
+      { status: 400 }
+    );
+  }
 
   try {
     const formData = await req.formData();
@@ -96,10 +106,17 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 // -----------------------------------------------------------
 // DELETE /api/stories/[storyId]
 // -----------------------------------------------------------
-export async function DELETE(req: NextRequest, { params }: RouteParams) {
-  // ✅ Выдалена 'await'
-  const { storyId } = params;
+export async function DELETE(req: NextRequest, ctx: RouteParams) {
+  const rawParams = await ctx.params;
+  const storyId = String(rawParams?.storyId ?? '').trim();
   const cookieStore = cookies();
+
+  if (!storyId) {
+    return NextResponse.json(
+      { message: 'Story ID is required' },
+      { status: 400 }
+    );
+  }
 
   try {
     const res = await api.delete(`/stories/${storyId}`, {
@@ -108,6 +125,7 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
       },
     });
 
+    // return 204 or the status the upstream returned
     return new NextResponse(null, { status: res.status || 204 });
   } catch (error) {
     if (!isAxiosError(error)) {
