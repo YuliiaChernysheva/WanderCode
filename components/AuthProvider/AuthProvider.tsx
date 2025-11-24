@@ -1,4 +1,3 @@
-// components/AuthProvider/AuthProvider.tsx
 'use client';
 
 import { getMe, checkSession } from '@/lib/api/clientApi';
@@ -21,6 +20,12 @@ export default function AuthProvider({ children }: Props) {
 
     const fetchUser = async () => {
       try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          clearIsAuthenticated();
+          return;
+        }
+
         let user = await getMe();
         if (!user) {
           const refreshed = await checkSession();

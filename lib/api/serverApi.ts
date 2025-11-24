@@ -3,7 +3,6 @@
 import { cookies } from 'next/headers';
 import { api } from './api';
 import {
-  // Category,
   CategoryResponse,
   DetailedStory,
   StoriesResponse,
@@ -12,7 +11,6 @@ import {
 import { UserResponse } from '@/types/user';
 import { AxiosResponse } from 'axios';
 import { OwnStoriesProp } from './clientApi';
-// import { StoryWithStatus } from '@/components/StoriesList/StoriesList';
 export const getStoriesServer = async ({
   page,
   perPage,
@@ -39,13 +37,17 @@ export const getStoriesServer = async ({
 };
 
 export const getServerCookies = async (): Promise<string> => {
-  const cookieStore = await cookies();
-  const cookieArray = cookieStore
-    .getAll()
-    .map((cookie) => `${cookie.name}=${cookie.value}`)
-    .filter(Boolean);
+  try {
+    const cookieStore = await cookies();
+    const cookieArray = cookieStore
+      .getAll()
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .filter(Boolean);
 
-  return cookieArray.length > 0 ? cookieArray.join('; ') : '';
+    return cookieArray.length > 0 ? cookieArray.join('; ') : '';
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const checkServerSession = async (): Promise<AxiosResponse> => {
@@ -204,7 +206,7 @@ export const getMeServer = async (
   if (!cookieString) return null;
 
   try {
-    const res = await api.get<UserResponse>('/users/current', {
+    const res = await api.post<UserResponse>('/users/current', {
       headers: { Cookie: cookieString },
     });
     return res.data;

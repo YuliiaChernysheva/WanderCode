@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { api } from '../../api';
 import { parse } from 'cookie';
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get('refreshToken')?.value;
