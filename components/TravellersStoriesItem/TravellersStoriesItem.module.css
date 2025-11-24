@@ -242,6 +242,11 @@
   cursor: pointer;
 }
 @media (min-width: 1440px) {
+  .card {
+    width: 340px;
+  }
+}
+@media (min-width: 1440px) {
   .title {
     font-size: 26px;
     min-height: calc(26px * 1.5 * 2);
@@ -249,5 +254,8 @@
   .description {
     font-size: 18px;
     min-height: calc(18px * 1.5 * 3);
+  }
+  .card {
+    min-width: 420px;
   }
 }
