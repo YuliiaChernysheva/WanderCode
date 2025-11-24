@@ -1,5 +1,4 @@
 import React from 'react';
-import { Metadata } from 'next';
 import {
   getTravellerById,
   getTravellerInfoById,
@@ -13,12 +12,12 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { StoriesResponse } from '@/lib/api/clientApi';
 
 type Props = {
-  params: { travellerId: string };
+  params: Promise<{ travellerId: string }>;
 };
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const travellerId = (await params)?.travellerId?.trim?.();
+export async function generateMetadata({ params }: Props) {
+  const travellerId = (await params).travellerId?.trim();
   if (!travellerId) {
     return { title: `Мандрівник не знайдений` };
   }
@@ -49,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function TravellerProfilePage({ params }: Props) {
-  const travellerId = (await params)?.travellerId?.trim?.();
+  const travellerId = (await params).travellerId?.trim();
 
   const traveller = await getTravellerById(travellerId);
   const queryClient = new QueryClient();
