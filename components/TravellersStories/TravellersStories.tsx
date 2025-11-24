@@ -1,183 +1,119 @@
-// components/TravellersStories/TravellersStories.tsx
 'use client';
-
-import { useMemo, useEffect, useState } from 'react';
-import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
 import {
-  fetchStoriesPage,
-  StoriesPage,
-  StoriesResponse,
-} from '@/lib/api/clientApi';
-import Loader from '@/components/Loader/Loader';
-import StoriesList from '@/components/StoriesList/StoriesList';
-import { showErrorToast } from '@/components/ShowErrorToast/ShowErrorToast';
-import { Story } from '@/types/story';
-import styles from './TravellersStories.module.css';
+  hydrate,
+  QueryClient,
+  QueryClientProvider,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import Loader from '../Loader/Loader';
+import { showErrorToast } from '../ShowErrorToast/ShowErrorToast';
+import { StoriesResponse } from '@/types/story';
+import styles from '../../app/(private routes)/profile/[pageType]/ProfileOwnPage.module.css';
+import TravellersStoriesItem from '../TravellersStoriesItem/TravellersStoriesItem';
+import { fetchOwnStoriesClient } from '@/lib/api/clientApi';
+import MessageNoStories from '../MessageNoStories/MessageNoStories';
 
-const useStoriesPerPage = (): number => {
-  const getInitialPerPage = () => {
-    if (typeof window === 'undefined') return 9;
-    if (window.innerWidth >= 1440) return 9;
-    if (window.innerWidth >= 768) return 8;
-    return 8;
-  };
+type StoriesClientProps = {
+  filter: string;
+  dehydratedState: unknown;
+};
 
-  const [perPage, setPerPage] = useState<number>(getInitialPerPage);
+function StoriesList({ filter }: { filter: string }) {
+  const [currentPerPage, setCurrentPerPage] = useState(9);
 
   useEffect(() => {
     const calculatePerPage = () => {
-      if (window.innerWidth >= 1440) return 9;
-      if (window.innerWidth >= 768) return 8;
-      return 8;
+      const width = window.innerWidth;
+      if (width >= 768 && width < 1440) return 8;
+      return 9;
     };
-
-    const handleResize = () => setPerPage(calculatePerPage());
-
+    setCurrentPerPage(calculatePerPage());
+    const handleResize = () => setCurrentPerPage(calculatePerPage());
     window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return perPage;
-};
-
-interface StoryWithStatus extends Story {
-  isFavorite: boolean;
-}
-
-export interface TravellersStoriesProps {
-  initialStories: StoriesResponse;
-  filter: string;
-}
-
-const TravellersStories = ({
-  initialStories,
-  filter,
-}: TravellersStoriesProps) => {
-  const data = initialStories?.data;
-
-  const perPage = useStoriesPerPage();
-
-  const initialPage: StoriesPage = {
-    stories: data?.data || [],
-    totalItems: data?.totalItems || 0,
-    totalPages: data?.totalPages || 1,
-    currentPage: data?.currentPage || 1,
-    nextPage:
-      (data?.currentPage || 1) < (data?.totalPages || 1)
-        ? (data?.currentPage || 1) + 1
-        : undefined,
-  };
-  const initialDataQuery: InfiniteData<StoriesPage, number> = {
-    pages: [initialPage],
-    pageParams: [1],
-  };
-
   const {
-    data: queryData,
-    isLoading,
-    isError,
-    error,
+    data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery<
-    StoriesPage,
-    Error,
-    InfiniteData<StoriesPage, number>,
-    ['travellerStories', { filter: string; perPage: number }],
-    number
-  >({
-    queryKey: ['travellerStories', { filter, perPage }],
+    isLoading,
+    isError,
+  } = useInfiniteQuery<StoriesResponse, Error>({
+    queryKey: ['stories', currentPerPage, filter],
+    queryFn: async (context) => {
+      const page = context.pageParam as number;
 
-    queryFn: ({ pageParam = 1 }) => {
-      return fetchStoriesPage({
-        pageParam: pageParam as number,
-        filter,
-        perPage,
-      });
+      return fetchOwnStoriesClient({ page, perPage: currentPerPage, filter });
     },
-
-    initialPageParam: initialPage.nextPage || 1,
-    getNextPageParam: (lastPage) => lastPage.nextPage,
-    initialData: initialDataQuery,
+    getNextPageParam: (lastPage) =>
+      lastPage.data.hasNextPage ? lastPage.data.page + 1 : undefined,
+    initialPageParam: 1,
   });
 
-  const allStories: StoryWithStatus[] = useMemo(() => {
-    const flatList = queryData?.pages.flatMap((page) => page.stories) ?? [];
-
-    const uniqueMap = flatList.reduce((map, story) => {
-      if (story?._id) {
-        if (!map.has(story._id)) {
-          map.set(story._id, story);
-        }
-      }
-      return map;
-    }, new Map<string, (typeof flatList)[number]>());
-
-    const stories = Array.from(uniqueMap.values());
-
-    return stories
-      .filter((story): story is Story => !!story)
-      .map((story) => ({
-        ...story,
-        isFavorite: (story as StoryWithStatus).isFavorite ?? false,
-      })) as StoryWithStatus[];
-  }, [queryData]);
-
+  // Помилка
   useEffect(() => {
     if (isError) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : 'Виникла помилка під час завантаження даних';
-      showErrorToast(message);
+      showErrorToast('Something went wrong while fetching stories.');
     }
-  }, [isError, error]);
+  }, [isError]);
 
-  if (isLoading) {
-    return (
-      <div className={styles.storiesLoader}>
-        <Loader />
-      </div>
-    );
-  }
-
-  const noStoriesMessage = 'Цей користувач ще не публікував історій';
-
-  if (!allStories.length && !hasNextPage) {
-    return (
-      <div className={styles.storiesEmpty}>
-        <h2 className={styles.storiesEmpty__title}>{noStoriesMessage}</h2>
-        <p className={styles.storiesEmpty__text}>
-          Станьте першим, хто поділиться власною подорожжю та надихне іншых!
-        </p>
-      </div>
-    );
-  }
-
-  const handleLoadMore = () => {
-    fetchNextPage();
-  };
+  const hasStories = data?.pages.some((page) => page.data.data.length > 0);
 
   return (
-    <section className={styles.stories}>
-      <StoriesList stories={allStories} />
-      {hasNextPage && (
-        <div className={styles.loadMoreWrap}>
-          <button
-            type="button"
-            className={styles.loadMoreBtn}
-            onClick={handleLoadMore}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? 'Завантаження...' : 'Переглянути ще'}
-          </button>
-        </div>
+    <>
+      {hasStories ? (
+        <>
+          {data && (
+            <ul className={styles.storyList}>
+              {data.pages.flatMap((page) => {
+                return page.data.data.map((story) => (
+                  <li className={styles.storyItem} key={story._id}>
+                    <TravellersStoriesItem story={story} />
+                  </li>
+                ));
+              })}
+            </ul>
+          )}
+          {hasNextPage && (
+            <div className={styles.loadMoreWrap}>
+              <button
+                className={styles.loadMoreBtn}
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+              >
+                {isFetchingNextPage ? 'Завантаження...' : 'Переглянути ще'}
+              </button>
+            </div>
+          )}
+          {isLoading && <Loader />}
+        </>
+      ) : (
+        <MessageNoStories
+          text={'Автор ще нічого не опублікував'}
+          buttonText={'Повернутися до інших авторів'}
+          route="/travellers"
+        />
       )}
-      {isFetchingNextPage && <Loader />}
-    </section>
+    </>
   );
-};
+}
 
-export default TravellersStories;
+export default function StoriesClient({
+  filter,
+  dehydratedState,
+}: StoriesClientProps) {
+  const [queryClient] = useState(() => new QueryClient());
+  useEffect(() => {
+    hydrate(queryClient, dehydratedState);
+  }, [queryClient, dehydratedState]);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <StoriesList filter={filter} />
+    </QueryClientProvider>
+  );
+}

@@ -237,6 +237,33 @@ export async function fetchStoryByIdServer(id: string): Promise<DetailedStory> {
   }
 }
 
+export const fetchOwnStoriesServer = async ({
+  page,
+  perPage,
+  filter,
+}: OwnStoriesProp) => {
+  try {
+    const res = await api.get<StoriesResponse>('/stories', {
+      params: {
+        page,
+        perPage,
+        ownerId: filter,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export interface OwnStories {
+  data: {
+    stories: Story[];
+    page: number;
+    hasNextPage: boolean;
+  };
+}
+
 export interface OwnStoriesResponse {
   stories: Story[];
   page: number;
