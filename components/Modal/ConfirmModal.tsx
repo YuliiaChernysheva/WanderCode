@@ -74,7 +74,7 @@ export default function ConfirmModal({
         onClick={(e) => e.stopPropagation()}
       >
         {showClose && (
-          <button type="button" className={styles.close} onClick={onCancel}>
+          <button type="button" className={styles.close} onClick={onClose}>
             <svg className={styles.closeIcon} width="24" height="24">
               <use href="/symbol-defs.svg#icon-close"></use>
             </svg>
@@ -92,15 +92,23 @@ export default function ConfirmModal({
 
         <div className={styles.actionsBtn}>
           <button
-            className={styles.cancelBtn}
-            onClick={onCancel ? onCancel : onClose}
+          type="button"
+          className={styles.cancelBtn}
+          onClick={() => {
+           onCancel?.();   // якщо передали onCancel – виконається
+           onClose();      // у будь-якому разі закриємо модалку
+           }}
           >
             {cancelText}
           </button>
           <button
+            type="button"
             ref={confirmBtnRef}
             className={styles.confirmBtn}
-            onClick={onConfirm}
+            onClick={() => {
+            onConfirm?.();  // спочатку логіка "До історії"
+            onClose();      // потім закрити модалку
+           }}
           >
             {confirmText}
           </button>
