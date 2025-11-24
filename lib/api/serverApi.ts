@@ -210,7 +210,7 @@ export const getMeServer = async (
     return res.data;
   } catch (error) {
     console.error('Помилка getMeServer:', error);
-    return null; // не кидаємо помилку на SSR
+    return null;
   }
 };
 

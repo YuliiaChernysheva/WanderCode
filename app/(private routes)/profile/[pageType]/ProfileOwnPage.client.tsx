@@ -59,6 +59,12 @@ export default function ProfileOwnPage({ filter }: TravellersStoriesProps) {
     }
   }, [isError]);
 
+  console.log('pages:', data?.pages);
+  console.log('firstPageStories:', data?.pages?.[0]?.data.data);
+  console.log('currentPerPage:', currentPerPage);
+  console.log('isLoading:', isLoading);
+  console.log('hasNextPage:', hasNextPage);
+
   return (
     <>
       {isStories ? (

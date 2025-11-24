@@ -14,7 +14,7 @@ export default async function HomePage() {
   let link;
   let btnText;
   if (isAuthenticated) {
-    link = '/auth/profile';
+    link = '/profile/saved';
     btnText = 'Збережені';
   } else {
     link = '/auth/register';
