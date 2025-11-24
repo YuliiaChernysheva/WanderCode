@@ -1,3 +1,4 @@
+// app/(public routes)/stories/[storyId]/StoryDetailsClient.tsx
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -15,6 +16,57 @@ interface PageParams {
   storyId: string;
 }
 
+type OwnerShape = {
+  _id?: string;
+  name?: string;
+  avatarUrl?: string;
+};
+
+// Safe helpers
+function hasKey(obj: unknown, key: string): boolean {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    key in (obj as Record<string, unknown>)
+  );
+}
+
+function asRecord(u: unknown): Record<string, unknown> {
+  return u as unknown as Record<string, unknown>;
+}
+
+function normalizeOwner(story: DetailedStory): OwnerShape {
+  const s = asRecord(story);
+
+  if (hasKey(s, 'owner')) {
+    const ownerVal = s['owner'];
+    if (typeof ownerVal === 'object' && ownerVal !== null) {
+      const o = ownerVal as Record<string, unknown>;
+      return {
+        _id: typeof o._id === 'string' ? (o._id as string) : undefined,
+        name: typeof o.name === 'string' ? (o.name as string) : undefined,
+        avatarUrl:
+          typeof o.avatarUrl === 'string' ? (o.avatarUrl as string) : undefined,
+      };
+    }
+  }
+
+  if (hasKey(s, 'ownerId')) {
+    const ownerIdVal = s['ownerId'];
+    if (typeof ownerIdVal === 'object' && ownerIdVal !== null) {
+      const o = ownerIdVal as Record<string, unknown>;
+      return {
+        _id: typeof o._id === 'string' ? (o._id as string) : undefined,
+        name: typeof o.name === 'string' ? (o.name as string) : undefined,
+        avatarUrl:
+          typeof o.avatarUrl === 'string' ? (o.avatarUrl as string) : undefined,
+      };
+    }
+  }
+
+  return {};
+}
+
 export function StoryDetailsClient({ storyId }: PageParams) {
   const queryClient = useQueryClient();
   const [imgSrc, setImgSrc] = useState<string>('/file.svg');
@@ -27,7 +79,6 @@ export function StoryDetailsClient({ storyId }: PageParams) {
   } = useQuery<DetailedStory, Error>({
     queryKey: ['story', storyId],
     queryFn: () => fetchStoryById(storyId),
-
     initialData: () =>
       queryClient.getQueryData<DetailedStory>(['story', storyId]),
     enabled: !!storyId,
@@ -40,15 +91,8 @@ export function StoryDetailsClient({ storyId }: PageParams) {
   useEffect(() => {
     if (!story?.category?._id) return;
 
-    console.log(
-      'Fetching categories for story category _id:',
-      story.category._id
-    );
-
     getCategories()
       .then((apiCategories) => {
-        console.log('API categories received:', apiCategories);
-
         const categories: { _id: string; name: string }[] = apiCategories.map(
           (c) => ({
             _id: c._id,
@@ -57,8 +101,6 @@ export function StoryDetailsClient({ storyId }: PageParams) {
         );
 
         const cat = categories.find((c) => c._id === story.category._id);
-        console.log('Matched category:', cat);
-
         setCategoryName(cat?.name ?? '–');
       })
       .catch((err) => {
@@ -89,22 +131,29 @@ export function StoryDetailsClient({ storyId }: PageParams) {
     );
   }
 
+  const owner = normalizeOwner(story);
+  const authorName = owner.name ?? '–';
+
   return (
     <div className={css.container}>
       <h2 className={css.title}>{story.title}</h2>
 
       <div className={css.infoBlock}>
         <div className={css.leftBlock}>
-          <p className={css.data}>
-            <span className={css.label}>Автор статті:</span>
-            <span className={css.value}>{story.owner?.name ?? '–'}</span>
-          </p>
-          <p className={css.data}>
-            <span className={css.label}>Опубліковано:</span>
-            <span className={css.value}>
-              {story.date ? new Date(story.date).toLocaleDateString() : '–'}
-            </span>
-          </p>
+          <div className={css.authorRow}>
+            <div className={css.authorMeta}>
+              <p className={css.data}>
+                <span className={css.label}>Автор статті:</span>
+                <span className={css.value}>{authorName}</span>
+              </p>
+              <p className={css.data}>
+                <span className={css.label}>Опубліковано:</span>
+                <span className={css.value}>
+                  {story.date ? new Date(story.date).toLocaleDateString() : '–'}
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
         <p className={css.country}>
           <span className={css.value}>{categoryName}</span>
@@ -117,7 +166,7 @@ export function StoryDetailsClient({ storyId }: PageParams) {
       >
         <Image
           src={imgSrc}
-          alt={story.title}
+          alt={story.title ?? 'story image'}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
           style={{ objectFit: 'cover' }}
