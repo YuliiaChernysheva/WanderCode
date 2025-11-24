@@ -104,7 +104,6 @@ export default async function StoryPage({ params }: PageProps) {
       queryFn: () => fetchStoryByIdServer(storyId),
     });
   } catch {
-    console.log('Запитаний Story ID:', storyId);
     return notFound();
   }
 

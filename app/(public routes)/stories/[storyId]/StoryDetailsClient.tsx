@@ -2,7 +2,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchStoryById, saveStory } from '@/lib/api/clientApi';
+import { addStoryToSaved, fetchStoryById } from '@/lib/api/clientApi';
 import css from './StoryDetailsClient.client.module.css';
 import { DetailedStory } from '@/types/story';
 import Loader from '@/components/Loader/Loader';
@@ -11,6 +11,8 @@ import MessageNoStories from '@/components/MessageNoStories/MessageNoStories';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { getCategories } from '@/lib/api/categories';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useRouter } from 'next/navigation';
 
 interface PageParams {
   storyId: string;
@@ -71,6 +73,8 @@ export function StoryDetailsClient({ storyId }: PageParams) {
   const queryClient = useQueryClient();
   const [imgSrc, setImgSrc] = useState<string>('/file.svg');
   const [categoryName, setCategoryName] = useState<string>('–');
+  const [isCurrentSaved, setIsCurrentSaved] = useState<boolean>();
+  const { isAuthenticated, user } = useAuthStore();
 
   const {
     data: story,
@@ -83,6 +87,14 @@ export function StoryDetailsClient({ storyId }: PageParams) {
       queryClient.getQueryData<DetailedStory>(['story', storyId]),
     enabled: !!storyId,
   });
+
+  useEffect(() => {
+    if (user?.selectedStories?.includes(storyId)) {
+      setIsCurrentSaved(true);
+    } else {
+      setIsCurrentSaved(false);
+    }
+  }, [user, storyId]);
 
   useEffect(() => {
     if (story?.img) setImgSrc(story.img);
@@ -109,11 +121,18 @@ export function StoryDetailsClient({ storyId }: PageParams) {
       });
   }, [story]);
 
+  const router = useRouter();
+
+  const goToRegister = () => {
+    router.push('/auth/login');
+  };
+
   const mutation = useMutation({
-    mutationFn: () => saveStory(storyId),
+    mutationFn: () => addStoryToSaved(storyId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['story', storyId] });
       toast.success('Історія збережена!');
+      setIsCurrentSaved(true);
     },
     onError: () => {
       toast.error('Не вдалося зберегти історію');
@@ -178,19 +197,27 @@ export function StoryDetailsClient({ storyId }: PageParams) {
       <div className={css.articleBlock}>
         <p className={css.article}>{story.article}</p>
 
-        <div className={css.savedBlock}>
-          <h3 className={css.savedTitle}>Збережіть собі історію</h3>
-          <p className={css.savedText}>
-            Вона буде доступна у вашому профілі у розділі збережене
-          </p>
-          <button
-            className={css.saveButton}
-            onClick={() => mutation.mutate()}
-            disabled={mutation.isPending}
-          >
-            {mutation.isPending ? 'Зберігаємо...' : 'Зберегти'}
-          </button>
-        </div>
+        {!isCurrentSaved && (
+          <div className={css.savedBlock}>
+            <h3 className={css.savedTitle}>Збережіть собі історію</h3>
+            <p className={css.savedText}>
+              Вона буде доступна у вашому профілі у розділі збережене
+            </p>
+            <button
+              className={css.saveButton}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  goToRegister();
+                } else {
+                  mutation.mutate();
+                }
+              }}
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? 'Зберігаємо...' : 'Зберегти'}
+            </button>
+          </div>
+        )}
       </div>
       <p className={css.stories}>Популярні історії</p>
     </div>
