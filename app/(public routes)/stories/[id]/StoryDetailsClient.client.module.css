@@ -275,6 +275,7 @@
     align-items: flex-start;
     justify-content: space-between;
     margin-top: 96px;
+    width: 100%;
   }
   .stories {
     font-size: 52px;

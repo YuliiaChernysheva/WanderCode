@@ -228,11 +228,7 @@ export async function fetchCategoriesServer(): Promise<CategoryResponse> {
 export async function fetchStoryByIdServer(id: string): Promise<DetailedStory> {
   try {
     const res = await api.get(`/stories/${id}`);
-    const storyData = res.data;
 
-    if (!storyData) {
-      throw new Error('Story Not Found (дані пусті)');
-    }
     return res.data;
   } catch (error) {
     throw error;

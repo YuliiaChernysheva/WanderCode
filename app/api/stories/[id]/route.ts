@@ -5,7 +5,7 @@ import { AxiosError, isAxiosError } from 'axios';
 import { api } from '../../api';
 
 interface RouteParams {
-  params: Promise<{ storyId: string }>;
+  params: Promise<{ id: string }>;
 }
 
 function logErrorResponse(error: AxiosError) {
@@ -14,9 +14,9 @@ function logErrorResponse(error: AxiosError) {
 }
 
 export async function GET(req: NextRequest, { params }: RouteParams) {
-  const { storyId } = await params;
+  const { id } = await params;
 
-  if (!storyId) {
+  if (!id) {
     return NextResponse.json(
       { message: 'Story ID is required' },
       { status: 400 }
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   }
 
   try {
-    const res = await api.get(`/stories/${storyId}`);
+    const res = await api.get(`/stories/${id}`);
 
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
@@ -47,15 +47,19 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PATCH /api/stories/[storyId]
-export async function PATCH(req: NextRequest, { params }: RouteParams) {
-  const { storyId } = await params;
+interface RoutePatchParams {
+  params: Promise<{ id: string }>;
+}
+
+// PATCH /api/stories/[id]
+export async function PATCH(req: NextRequest, { params }: RoutePatchParams) {
+  const { id } = await params;
   const cookieStore = await cookies();
 
   try {
     const formData = await req.formData();
 
-    const res = await api.patch(`/stories/${storyId}`, formData, {
+    const res = await api.patch(`/stories/${id}`, formData, {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -80,13 +84,13 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/stories/[storyId]
-export async function DELETE(req: NextRequest, { params }: RouteParams) {
-  const { storyId } = await params;
+// DELETE /api/stories/[id]
+export async function DELETE(req: NextRequest, { params }: RoutePatchParams) {
+  const { id } = await params;
   const cookieStore = await cookies();
 
   try {
-    const res = await api.delete(`/stories/${storyId}`, {
+    const res = await api.delete(`/stories/${id}`, {
       headers: {
         Cookie: cookieStore.toString(),
       },
