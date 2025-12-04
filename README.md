@@ -5,7 +5,7 @@ The app allows users to read authentic travel stories, save favorite articles, a
 
 ⸻
 
-✨ Core Features
+✨ Core Features:
 
 📚 Travel Stories Feed
 Browse and read stories shared by other travelers.
@@ -26,12 +26,12 @@ Stories displayed as cards with:
  • author info
  • publication date
 
-📱 Fully Responsive
+📱 Fully Responsive:
 Optimized for desktop, tablet, and mobile screens.
 
 ⸻
 
-🛠️ Tech Stack
+🛠️ Tech Stack:
 
 Front-end:
  • Next.js
@@ -57,7 +57,7 @@ Tools:
 
 ⸻
 
-👩‍💻 My Contributions
+👩‍💻 My Contributions:
 
 I worked as a Full-Stack Developer (focus on frontend) and contributed to:
  • Development of the “Popular Stories” section
