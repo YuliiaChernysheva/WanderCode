@@ -1,38 +1,67 @@
 🌍 Podorozhnyk — Travel Stories Platform
 
-Podorozhnyk is a modern web platform created for travelers and people who love exploring the world.
-The app allows users to read authentic travel stories from other travellers, save favorite articles, and publish their own experiences.
-This is a team project developed during our full-stack course.
+Podorozhnyk is a modern web platform designed for travelers and people who love exploring the world.
+The app allows users to read authentic travel stories, save favorite articles, and publish their own travel experiences.
 
-✨ Project Features
+⸻
 
-Travel stories feed
-Users can browse and read stories shared by other travellers.
+✨ Core Features
 
-Save stories to favorites
-Each user can add stories to their saved list to return to them later.
+📚 Travel Stories Feed
+Browse and read stories shared by other travelers.
 
-Create and publish your own stories
-Authenticated users can write and publish their own travel articles about places they visit.
+⭐ Favorites
+Save stories to favorites and access them later.
 
-Travellers community
-Users can explore a list of travellers and open their profiles.
+✍️ Create Stories
+Authenticated users can create and publish their own travel stories.
 
-Clean and structured UI
-Stories are displayed as cards with images, category badges, author and date info.
+👥 Traveller Community
+Explore profiles of other users and discover new places to visit.
 
-Fully responsive design
-The interface is adapted for desktop, tablet, and mobile (from 320px).
+🧾 Clean UI & Content Structure
+Stories displayed as cards with:
+ • images
+ • categories
+ • author info
+ • publication date
 
-⚙️ Tech Stack
+📱 Fully Responsive
+Optimized for desktop, tablet, and mobile screens.
+
+⸻
+
+🛠️ Tech Stack
+
 Front-end:
-Next.js, React, TypeScript, Axios, React Query (TanStack Query), Zustand, CSS Modules, Next/Image.
-Back-end / API:
-Node.js, Express, MongoDB / Mongoose, JWT authentication (access + refresh tokens), Swagger.
-Tools:
-VSCode, Git/GitHub, Figma, ESLint + Prettier.
+ • Next.js
+ • React
+ • TypeScript
+ • TanStack Query
+ • Zustand
+ • CSS Modules
+ • Next/Image
 
-👥Team Dev WanderCode team: 
-Team Lead+Developer: Viktor Skalei
-Scrum Master+Developer: Anastasiia Lahotska
-Developers: Vadzim Simanau, Sysoiev Hennadii, Beniamin Mishkur, Serhii Shevchenko, Yuliia Chernysheva, Yevheniia Voiuieva, Yana Rudometova, Oleksii Tepliak
+Back-end / API:
+ • Node.js
+ • Express
+ • MongoDB / Mongoose
+ • JWT Authentication (access + refresh tokens)
+ • Swagger
+
+Tools:
+ • VSCode
+ • Git / GitHub
+ • Figma
+ • ESLint + Prettier
+
+⸻
+
+👩‍💻 My Contributions
+
+I worked as a Full-Stack Developer (focus on frontend) and contributed to:
+ • Development of the “Popular Stories” section
+ • Creation of a reusable modal component
+ • UI layout and responsive styling
+ • Some backend tasks: data structure + API logic
+ • UX improvements and visual consistency, Yuliia Chernysheva, Yevheniia Voiuieva, Yana Rudometova, Oleksii Tepliak
