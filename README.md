@@ -26,7 +26,7 @@ Stories displayed as cards with:
  • author info
  • publication date
 
-📱 Fully Responsive:
+📱 Fully Responsive
 Optimized for desktop, tablet, and mobile screens.
 
 ⸻
